@@ -1,1 +1,47 @@
-/* AssetFormPage styles */
+/* ── Asset Form Page ──────────────────────────────────────── */
+
+.asset-form-page__card {
+  max-width: 720px;
+}
+
+/* ── Alert ────────────────────────────────────────────────── */
+
+.asset-form-page__alert {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--danger-light);
+  color: var(--danger-dark);
+  border: 1px solid rgba(250, 82, 82, 0.2);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-6);
+  max-width: 720px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.asset-form-page__alert svg {
+  flex-shrink: 0;
+}
+
+/* ── Loading ─────────────────────────────────────────────── */
+
+.asset-form-page__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16) 0;
+  color: var(--text-muted);
+  gap: var(--space-4);
+}
+
+.asset-form-page__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--gray-200);
+  border-top-color: var(--primary-500);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
