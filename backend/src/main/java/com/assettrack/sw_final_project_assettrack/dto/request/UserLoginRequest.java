@@ -1,6 +1,8 @@
 package com.assettrack.sw_final_project_assettrack.dto.request;
+
+
+
 import lombok.*;
-import java.time.LocalDate;
 import jakarta.validation.constraints.*;
 
 @Getter
@@ -8,7 +10,15 @@ import jakarta.validation.constraints.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReportRequest {
+
+public class UserLoginRequest {
+
+    @Email
     @NotBlank
-    private String description;
+    private String email;
+
+    @NotBlank
+    private String password;
+
 }
+

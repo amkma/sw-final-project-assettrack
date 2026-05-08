@@ -34,18 +34,23 @@ public class User {
         nullable = false
     )    
     private String password;
-    @Column(nullable = false)
-    private long roleId;//0 user 1 manager 2 admin
+
+    @Builder.Default
+    private long roleId=0;//0 user 1 manager 2 admin
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Asset> assets = new ArrayList<>();
     
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
-    private List<History> histories = new ArrayList<>();
-
+    private List<History> fromHistories = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<History> toHistories = new ArrayList<>();
+    
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default

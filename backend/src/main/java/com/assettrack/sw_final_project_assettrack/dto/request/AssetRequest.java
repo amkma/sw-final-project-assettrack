@@ -9,16 +9,18 @@ import jakarta.validation.constraints.*;
 @AllArgsConstructor
 @Builder
 public class AssetRequest {
-    @NotBlank
-     private String sn;
-    @NotBlank
-     private String type;
-    @NotBlank
-     private String brand;
-    @NotBlank
-     private String model;
     @NotNull
-     private LocalDate purchaseDate;
+    private long userId;
+    @NotBlank
+    private String sn;
+    @NotBlank
+    private String type;
+    @NotBlank
+    private String brand;
+    @NotBlank
+    private String model;
     @NotNull
-     private LocalDate warrantyEndDate;
+    private LocalDate purchaseDate;
+    @NotNull
+    private LocalDate warrantyEndDate;
 }

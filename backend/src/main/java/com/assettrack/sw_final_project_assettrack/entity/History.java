@@ -15,8 +15,6 @@ public class History {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String type;
 
     @Column(nullable = false)
     private String note;
@@ -24,7 +22,6 @@ public class History {
     @Column(nullable = false)
     private LocalDate assignedAt;
     
-    @Column(nullable = false)
     private LocalDate returnedAt;
 
 
@@ -32,7 +29,10 @@ public class History {
     private Asset asset;
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private User user;
+    private User fromUser;
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private User toUser ;
 
    
 }

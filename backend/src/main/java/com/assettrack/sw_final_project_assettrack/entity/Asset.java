@@ -33,7 +33,7 @@ public class Asset {
     private LocalDate purchaseDate;
     
     @Column(nullable = false)
-    private LocalDate WarrantyEndDate;
+    private LocalDate warrantyEndDate;
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

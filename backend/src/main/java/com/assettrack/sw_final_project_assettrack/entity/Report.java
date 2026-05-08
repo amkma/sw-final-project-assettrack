@@ -1,12 +1,8 @@
 package com.assettrack.sw_final_project_assettrack.entity;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Entity
 @Table(name = "Report")
