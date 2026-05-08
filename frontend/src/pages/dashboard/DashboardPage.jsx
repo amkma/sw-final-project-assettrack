@@ -4,6 +4,7 @@ import { getAssets } from '../../api/assetApi'
 import { getHistoryByUser } from '../../api/historyApi'
 import StatCard from '../../components/cards/StatCard'
 import AssetChart from '../../components/charts/AssetChart'
+import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './DashboardPage.css'
 
 // ── SVG Icons for stat cards ────────────────────────────────
@@ -124,10 +125,7 @@ export default function DashboardPage() {
       </div>
 
       {loading ? (
-        <div className="dashboard-page__loading">
-          <div className="dashboard-page__spinner" />
-          <p>Loading dashboard data…</p>
-        </div>
+        <LoadingSpinner message="Loading dashboard data…" />
       ) : (
         <>
           {/* Stat Cards Row */}

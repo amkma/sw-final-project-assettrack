@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import useAuth from '../../hooks/useAuth'
 import { getReports, updateReportStatus } from '../../api/reportApi'
+import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './ReportsListPage.css'
 
 const STATUS_BADGE = {
@@ -97,10 +98,7 @@ export default function ReportsListPage() {
 
       {/* Loading */}
       {loading ? (
-        <div className="reports-list-page__loading">
-          <div className="reports-list-page__spinner" />
-          <p>Loading reports…</p>
-        </div>
+        <LoadingSpinner message="Loading reports…" />
       ) : filtered.length === 0 ? (
         <div className="empty-state">
           <svg width="56" height="56" viewBox="0 0 56 56" fill="none" style={{ marginBottom: 'var(--space-4)', opacity: 0.35 }}>
@@ -161,7 +159,7 @@ export default function ReportsListPage() {
                           <option value="Resolved">Resolved</option>
                         </select>
                         {updatingId === report.id && (
-                          <span className="reports-list-page__status-spinner" />
+                          <LoadingSpinner size="sm" inline />
                         )}
                       </div>
                     </td>

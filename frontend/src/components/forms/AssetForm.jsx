@@ -1,3 +1,4 @@
+import LoadingSpinner from '../common/LoadingSpinner'
 import './AssetForm.css'
 
 /**
@@ -160,7 +161,7 @@ export default function AssetForm({
         >
           {loading ? (
             <>
-              <span className="asset-form__spinner" />
+              <LoadingSpinner size="sm" inline />
               {isEditing ? 'Saving…' : 'Creating…'}
             </>
           ) : (

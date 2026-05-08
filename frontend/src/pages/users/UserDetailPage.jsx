@@ -4,6 +4,7 @@ import useAuth from '../../hooks/useAuth'
 import { getUserById, updateUser } from '../../api/userApi'
 import { getAssets } from '../../api/assetApi'
 import UserForm from '../../components/forms/UserForm'
+import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './UserDetailPage.css'
 
 const ROLE_MAP = { 0: 'Developer', 1: 'Manager', 2: 'Admin' }
@@ -69,12 +70,7 @@ export default function UserDetailPage() {
   // ── Loading / Not Found ────────────────────────────────
 
   if (loading) {
-    return (
-      <div className="user-detail__loading">
-        <div className="user-detail__spinner" />
-        <p>Loading user details…</p>
-      </div>
-    )
+    return <LoadingSpinner message="Loading user details…" />
   }
 
   if (!profile) {

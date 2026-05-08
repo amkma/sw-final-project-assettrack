@@ -1,3 +1,4 @@
+import LoadingSpinner from '../common/LoadingSpinner'
 import './UserForm.css'
 
 /**
@@ -38,7 +39,7 @@ export default function UserForm({ currentRole, onSubmit, loading }) {
             <option key={r.id} value={r.id}>{r.label}</option>
           ))}
         </select>
-        {loading && <span className="user-form__spinner" />}
+        {loading && <LoadingSpinner size="sm" inline />}
       </div>
     </div>
   )

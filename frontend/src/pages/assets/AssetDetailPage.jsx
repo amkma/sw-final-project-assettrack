@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 import { getAssetById, findSpare } from '../../api/assetApi'
 import { getHistoryByAsset } from '../../api/historyApi'
+import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './AssetDetailPage.css'
 
 export default function AssetDetailPage() {
@@ -79,12 +80,7 @@ export default function AssetDetailPage() {
   // ── Loading / Not Found ────────────────────────────────
 
   if (loading) {
-    return (
-      <div className="asset-detail__loading">
-        <div className="asset-detail__spinner" />
-        <p>Loading asset details…</p>
-      </div>
-    )
+    return <LoadingSpinner message="Loading asset details…" />
   }
 
   if (!asset) {

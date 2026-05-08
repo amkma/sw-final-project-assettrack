@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 import { getAssets } from '../../api/assetApi'
 import AssetCard from '../../components/cards/AssetCard'
+import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './AssetsListPage.css'
 
 const ITEMS_PER_PAGE = 10
@@ -198,10 +199,7 @@ export default function AssetsListPage() {
 
       {/* Loading */}
       {loading ? (
-        <div className="assets-list-page__loading">
-          <div className="assets-list-page__spinner" />
-          <p>Loading assets…</p>
-        </div>
+        <LoadingSpinner message="Loading assets…" />
       ) : filtered.length === 0 ? (
         <div className="empty-state">
           <svg width="56" height="56" viewBox="0 0 56 56" fill="none" style={{ marginBottom: 'var(--space-4)', opacity: 0.35 }}>

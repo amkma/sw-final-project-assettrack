@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getUsers } from '../../api/userApi'
 import { getAssets } from '../../api/assetApi'
+import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './UsersListPage.css'
 
 const ROLE_MAP = { 0: 'Developer', 1: 'Manager', 2: 'Admin' }
@@ -87,10 +88,7 @@ export default function UsersListPage() {
 
       {/* Loading */}
       {loading ? (
-        <div className="users-list-page__loading">
-          <div className="users-list-page__spinner" />
-          <p>Loading users…</p>
-        </div>
+        <LoadingSpinner message="Loading users…" />
       ) : filtered.length === 0 ? (
         <div className="empty-state">
           <h3>No users found</h3>

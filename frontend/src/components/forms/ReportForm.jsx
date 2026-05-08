@@ -1,3 +1,4 @@
+import LoadingSpinner from '../common/LoadingSpinner'
 import './ReportForm.css'
 
 /**
@@ -68,7 +69,7 @@ export default function ReportForm({
         >
           {loading ? (
             <>
-              <span className="report-form__spinner" />
+              <LoadingSpinner size="sm" inline />
               Submitting…
             </>
           ) : (

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { getNotifications, markAsRead } from '../../api/notificationApi'
 import { groupByDate } from '../../utils/helpers'
 import NotificationCard from '../../components/cards/NotificationCard'
+import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './NotificationsPage.css'
 
 export default function NotificationsPage() {
@@ -65,10 +66,7 @@ export default function NotificationsPage() {
       </div>
 
       {loading ? (
-        <div className="notifications-page__loading">
-          <div className="notifications-page__spinner" />
-          <p>Loading notifications…</p>
-        </div>
+        <LoadingSpinner message="Loading notifications…" />
       ) : notifications.length === 0 ? (
         <div className="empty-state">
           <svg width="56" height="56" viewBox="0 0 56 56" fill="none" style={{ marginBottom: 'var(--space-4)', opacity: 0.35 }}>

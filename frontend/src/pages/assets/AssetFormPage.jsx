@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { getAssetById, createAsset, updateAsset } from '../../api/assetApi'
 import { getUsers } from '../../api/userApi'
 import AssetForm from '../../components/forms/AssetForm'
+import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './AssetFormPage.css'
 
 export default function AssetFormPage() {
@@ -135,12 +136,7 @@ export default function AssetFormPage() {
   // ── Page loading state ────────────────────────────────
 
   if (pageLoading) {
-    return (
-      <div className="asset-form-page__loading">
-        <div className="asset-form-page__spinner" />
-        <p>Loading asset data…</p>
-      </div>
-    )
+    return <LoadingSpinner message="Loading asset data…" />
   }
 
   return (
