@@ -11,7 +11,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     List<Report> findByUserId(Long userId); 
 
-    List<Report> findByStatus(String status);
+    List<Report> findByStatus(String status);//
 
     
 

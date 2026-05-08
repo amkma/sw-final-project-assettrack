@@ -18,4 +18,6 @@ public class HistoryResponse {
     private LocalDate returnedAt;
 
     private long userId;
+
+    private long assetId;
 }

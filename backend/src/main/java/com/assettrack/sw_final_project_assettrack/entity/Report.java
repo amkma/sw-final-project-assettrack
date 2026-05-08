@@ -16,8 +16,10 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @Column(nullable = false)
-    private String status;
+    @Builder.Default
+    private String status="PENDING";
 
     @Column(nullable = false)
     private String description;
