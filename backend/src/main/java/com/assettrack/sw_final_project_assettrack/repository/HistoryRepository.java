@@ -7,7 +7,7 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
     List<History> findByAssetId(Long assetId);
 
-    List<History> findByUserId(Long userId);// to see history of a specific user
+    List<History> findByToUserId(Long userId);// to see history of a specific user
 
     
 }

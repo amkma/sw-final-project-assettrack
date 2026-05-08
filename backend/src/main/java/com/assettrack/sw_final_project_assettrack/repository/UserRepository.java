@@ -11,5 +11,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email); // to check if email is already registered
 
-    List<User> findByRole(long role);
+    List<User> findByRoleId(long role);
 }
