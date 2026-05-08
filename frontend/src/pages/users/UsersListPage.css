@@ -1,1 +1,73 @@
-/* UsersListPage styles */
+/* ── Users List Page ──────────────────────────────────────── */
+
+/* ── Filter Bar ──────────────────────────────────────────── */
+
+.users-list-page__filters {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.users-list-page__filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 180px;
+}
+
+.users-list-page__filter-group .form-select {
+  padding: 8px 12px;
+  font-size: var(--text-sm);
+}
+
+/* ── Table Row ───────────────────────────────────────────── */
+
+.users-list-page__row {
+  cursor: pointer;
+}
+
+.users-list-page__row:hover {
+  background: var(--primary-50) !important;
+}
+
+.users-list-page__name-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* ── Loading ─────────────────────────────────────────────── */
+
+.users-list-page__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16) 0;
+  color: var(--text-muted);
+  gap: var(--space-4);
+}
+
+.users-list-page__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--gray-200);
+  border-top-color: var(--primary-500);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .users-list-page__filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .users-list-page__filter-group {
+    min-width: 100%;
+  }
+}

@@ -1,1 +1,27 @@
-/* UserForm styles */
+/* ── User Form ────────────────────────────────────────────── */
+
+.user-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.user-form__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.user-form__row .form-select {
+  max-width: 200px;
+}
+
+.user-form__spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--gray-200);
+  border-top-color: var(--primary-500);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  flex-shrink: 0;
+}
