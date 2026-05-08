@@ -8,6 +8,9 @@ import DashboardLayout from './layouts/DashboardLayout'
 import ProtectedRoute from './components/common/ProtectedRoute'
 import RoleGuard from './components/common/RoleGuard'
 
+// Landing page
+import LandingPage from './pages/LandingPage'
+
 // Auth pages
 import LoginPage from './pages/auth/LoginPage'
 import SignUpPage from './pages/auth/SignUpPage'
@@ -41,6 +44,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* ── Landing Page (public) ─────────────────────── */}
+        <Route path="/" element={<LandingPage />} />
+
         {/* ── Public Auth Routes ─────────────────────────── */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />
@@ -56,7 +62,7 @@ function App() {
           }
         >
           {/* Dashboard — all roles */}
-          <Route path="/" element={<DashboardPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
 
           {/* Assets — all roles can view */}
           <Route path="/assets" element={<AssetsListPage />} />

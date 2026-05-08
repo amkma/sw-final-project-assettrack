@@ -1,0 +1,16 @@
+/* ── TextType ─────────────────────────────────────────────── */
+
+.text-type {
+  display: inline;
+}
+
+.text-type__text {
+  /* Inherits parent font styling */
+}
+
+.text-type__cursor {
+  display: inline-block;
+  margin-left: 2px;
+  font-weight: 300;
+  color: inherit;
+}

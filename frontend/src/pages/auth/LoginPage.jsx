@@ -75,7 +75,7 @@ export default function LoginPage() {
 
     try {
       await login(formData.email, formData.password)
-      navigate('/', { replace: true })
+      navigate('/dashboard', { replace: true })
     } catch (err) {
       const message =
         err.response?.data?.message ||
@@ -89,7 +89,7 @@ export default function LoginPage() {
 
   function handleDemoLogin(role) {
     demoLogin(DEMO_USERS[role])
-    navigate('/', { replace: true })
+    navigate('/dashboard', { replace: true })
   }
 
   return (
