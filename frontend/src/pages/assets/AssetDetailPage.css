@@ -1,1 +1,214 @@
-/* AssetDetailPage styles */
+/* ── Asset Detail Page ────────────────────────────────────── */
+
+/* ── Header Actions ──────────────────────────────────────── */
+
+.asset-detail__header-actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* ── Two-Column Grid ─────────────────────────────────────── */
+
+.asset-detail__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+@media (max-width: 900px) {
+  .asset-detail__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Info Fields ─────────────────────────────────────────── */
+
+.asset-detail__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+@media (max-width: 600px) {
+  .asset-detail__fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+.asset-detail__field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.asset-detail__field-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.asset-detail__field-value {
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.asset-detail__field-value code {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+/* ── Warranty Indicator Bar ──────────────────────────────── */
+
+.asset-detail__warranty-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.asset-detail__warranty-bar--success {
+  background: var(--success-light);
+  color: var(--success-dark);
+}
+
+.asset-detail__warranty-bar--warning {
+  background: var(--warning-light);
+  color: var(--warning-dark);
+}
+
+.asset-detail__warranty-bar--danger {
+  background: var(--danger-light);
+  color: var(--danger-dark);
+}
+
+.asset-detail__warranty-bar--neutral {
+  background: var(--gray-100);
+  color: var(--gray-600);
+}
+
+/* ── Owner Card ──────────────────────────────────────────── */
+
+.asset-detail__owner-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.asset-detail__unassigned {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6) 0;
+  text-align: center;
+}
+
+/* ── Find Spare ──────────────────────────────────────────── */
+
+.asset-detail__spare {
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-light);
+}
+
+.asset-detail__spare-result {
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--success-light);
+  border-radius: var(--radius-md);
+}
+
+/* ── Allocation History Timeline ─────────────────────────── */
+
+.asset-detail__timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.asset-detail__timeline-item {
+  display: flex;
+  gap: var(--space-4);
+  min-height: 70px;
+}
+
+.asset-detail__timeline-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 20px;
+}
+
+.asset-detail__timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--primary-500);
+  box-shadow: 0 0 0 4px var(--primary-100);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.asset-detail__timeline-line {
+  width: 2px;
+  flex: 1;
+  background: var(--border-light);
+  margin-top: var(--space-1);
+  margin-bottom: var(--space-1);
+}
+
+.asset-detail__timeline-content {
+  flex: 1;
+  padding-bottom: var(--space-5);
+}
+
+.asset-detail__timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-1);
+}
+
+.asset-detail__timeline-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.asset-detail__timeline-user {
+  display: inline-flex;
+  gap: var(--space-1);
+}
+
+/* ── Loading ─────────────────────────────────────────────── */
+
+.asset-detail__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16) 0;
+  color: var(--text-muted);
+  gap: var(--space-4);
+}
+
+.asset-detail__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--gray-200);
+  border-top-color: var(--primary-500);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
