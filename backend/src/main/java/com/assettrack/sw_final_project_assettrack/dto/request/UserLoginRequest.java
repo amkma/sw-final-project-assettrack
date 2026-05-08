@@ -1,16 +1,14 @@
 package com.assettrack.sw_final_project_assettrack.dto.request;
 
-
-
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import jakarta.validation.constraints.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class UserLoginRequest {
 
     @Email
@@ -19,6 +17,5 @@ public class UserLoginRequest {
 
     @NotBlank
     private String password;
-
 }
 

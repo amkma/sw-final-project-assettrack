@@ -1,13 +1,16 @@
 package com.assettrack.sw_final_project_assettrack.dto.request;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import jakarta.validation.constraints.*;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class UserUpdateRequest {
+
     @NotNull(message = "User ID is required")
     private Long id;
 

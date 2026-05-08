@@ -29,103 +29,103 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
-	private final UserRepository userRepository;
-	private final UserMapper userMapper;
-	private final PasswordEncoder passwordEncoder;
-	private final JwtUtil jwtUtil;
-	private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
-	@Transactional
-	public UserResponse register(UserRegisterRequest req) {
-		String email = normalizeEmail(req.getEmail());
-		if (userRepository.existsByEmailIgnoreCase(email)) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already registered");
-		}
+    @Transactional
+    public UserResponse register(UserRegisterRequest request) {
+        String email = normalizeEmail(request.getEmail());
+        if (userRepository.existsByEmailIgnoreCase(email)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already registered");
+        }
 
-		User user = userMapper.toEntity(req);
-		user.setEmail(email);
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = userMapper.toEntity(request);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-		return userMapper.toResponse(userRepository.save(user));
-	}
+        return userMapper.toResponse(userRepository.save(user));
+    }
 
-	public AuthResponse login(UserLoginRequest req) {
-		String email = normalizeEmail(req.getEmail());
+    public AuthResponse login(UserLoginRequest request) {
+        String email = normalizeEmail(request.getEmail());
 
-		try {
-			var authentication = authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(email, req.getPassword())
-			);
+        try {
+            var authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, request.getPassword())
+            );
 
-			CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
-			User user = userRepository.findById(principal.getId())
-					.orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
+            CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+            User user = userRepository.findById(principal.getId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
 
-			String token = jwtUtil.generateToken(user.getId(), principal.getRole());
-			return userMapper.toAuthResponse(token, user);
-		} catch (BadCredentialsException ex) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
-		}
-	}
+            String token = jwtUtil.generateToken(user.getId(), principal.getRole());
+            return userMapper.toAuthResponse(token, user);
+        } catch (BadCredentialsException ex) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+        }
+    }
 
-	public UserResponse getById(Long id) {
-		User user = userRepository.findById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-		return userMapper.toResponse(user);
-	}
+    public UserResponse getById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return userMapper.toResponse(user);
+    }
 
-	public List<UserResponse> listByRole(long roleId) {
-		try {
-			AppRole.fromId(roleId);
-		} catch (IllegalArgumentException ex) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
-		}
-		return userRepository.findByRoleId(roleId).stream()
-				.map(userMapper::toResponse)
-				.collect(Collectors.toList());
-	}
+    public List<UserResponse> listByRole(long roleId) {
+        try {
+            AppRole.fromId(roleId);
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
+        return userRepository.findByRoleId(roleId).stream()
+                .map(userMapper::toResponse)
+                .collect(Collectors.toList());
+    }
 
-	@Transactional
-	public UserResponse updateUser(UserUpdateRequest req) {
-		User user = userRepository.findById(req.getId())
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    @Transactional
+    public UserResponse updateUser(UserUpdateRequest request) {
+        User user = userRepository.findById(request.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-		if (req.getEmail() != null) {
-			String email = normalizeEmail(req.getEmail());
-			if (!email.equalsIgnoreCase(user.getEmail()) && userRepository.existsByEmailIgnoreCaseAndIdNot(email, user.getId())) {
-				throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already registered by another user");
-			}
-			req.setEmail(email);
-		}
+        if (request.getEmail() != null) {
+            String email = normalizeEmail(request.getEmail());
+            if (!email.equalsIgnoreCase(user.getEmail()) && userRepository.existsByEmailIgnoreCaseAndIdNot(email, user.getId())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already registered by another user");
+            }
+            request.setEmail(email);
+        }
 
-		userMapper.updateEntityFromRequest(req, user);
+        userMapper.updateEntityFromRequest(request, user);
 
-		if (req.getPassword() != null && !req.getPassword().isBlank()) {
-			user.setPassword(passwordEncoder.encode(req.getPassword()));
-		}
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
 
-		return userMapper.toResponse(userRepository.save(user));
-	}
+        return userMapper.toResponse(userRepository.save(user));
+    }
 
-	@Transactional
-	public UserResponse changeRole(Long userId, Long newRoleId) {
-		AppRole role;
-		try {
-			role = AppRole.fromId(newRoleId);
-		} catch (IllegalArgumentException ex) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
-		}
-		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    @Transactional
+    public UserResponse changeRole(Long userId, Long newRoleId) {
+        AppRole role;
+        try {
+            role = AppRole.fromId(newRoleId);
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-		user.setRoleId(role.getId());
-		return userMapper.toResponse(userRepository.save(user));
-	}
+        user.setRoleId(role.getId());
+        return userMapper.toResponse(userRepository.save(user));
+    }
 
-	private String normalizeEmail(String email) {
-		if (email == null || email.isBlank()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
-		}
-		return email.trim().toLowerCase(Locale.ROOT);
-	}
+    private String normalizeEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
+        }
+        return email.trim().toLowerCase(Locale.ROOT);
+    }
 }

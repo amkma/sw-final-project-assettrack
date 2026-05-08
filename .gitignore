@@ -3,7 +3,7 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+.amazonq
 ### STS ###
 .apt_generated
 .classpath
@@ -74,3 +74,4 @@ yarn-error.log*
 
 # package managers
 .pnpm-store
+backend/REFACTOR_SUMMARY.md

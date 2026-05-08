@@ -56,9 +56,14 @@ public class UserMapper {
     public void updateEntityFromRequest(UserUpdateRequest request, User user) {
         if (request == null || user == null) return;
 
-        if (request.getFirstName() != null) user.setFirstName(request.getFirstName());
-        if (request.getLastName() != null) user.setLastName(request.getLastName());
-        if (request.getEmail() != null) user.setEmail(request.getEmail());
-        if (request.getPassword() != null) user.setPassword(request.getPassword());
+        if (request.getFirstName() != null) {
+            user.setFirstName(request.getFirstName());
+        }
+        if (request.getLastName() != null) {
+            user.setLastName(request.getLastName());
+        }
+        if (request.getEmail() != null) {
+            user.setEmail(request.getEmail());
+        }
     }
 }

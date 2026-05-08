@@ -1,6 +1,5 @@
 package com.assettrack.sw_final_project_assettrack.entity;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,13 +25,10 @@ public class User {
     @Column(nullable = false)
     private String lastName;
 
-    @Email
-    @NotBlank
-    @Column(nullable = false, unique = true)    
+    @Column(nullable = false, unique = true)
     private String email;
-    @Column(
-        nullable = false
-    )    
+
+    @Column(nullable = false)
     private String password;
 
     @Builder.Default
@@ -42,13 +38,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Asset> assets = new ArrayList<>();
-    
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<History> history = new ArrayList<>();
-    
-    
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Report> reports = new ArrayList<>();
