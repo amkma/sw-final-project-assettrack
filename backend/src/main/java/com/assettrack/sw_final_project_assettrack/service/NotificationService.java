@@ -33,7 +33,7 @@ public class NotificationService {
     public long countUnreadNotifications(Long userId) {
 
         return notificationRepository
-                .countByUserIdAndReadFalse(userId);
+                .countByUserIdAndIsReadFalse(userId);
     }
 
   
