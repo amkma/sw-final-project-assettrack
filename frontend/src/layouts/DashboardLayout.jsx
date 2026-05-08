@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Navbar from '../components/common/Navbar'
 import Sidebar from '../components/common/Sidebar'
+import Footer from '../components/common/Footer'
 import './DashboardLayout.css'
 
 export default function DashboardLayout() {
@@ -22,7 +23,9 @@ export default function DashboardLayout() {
         <main className="dashboard-layout__content">
           <Outlet />
         </main>
+        <Footer />
       </div>
     </div>
   )
 }
+
