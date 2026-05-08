@@ -36,7 +36,7 @@ public class Asset {
     private LocalDate warrantyEndDate;
 
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
 
