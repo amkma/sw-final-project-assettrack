@@ -1,1 +1,74 @@
-/* SearchPage styles */
+/* ── Search Page ──────────────────────────────────────────── */
+
+/* ── Form Card ───────────────────────────────────────────── */
+
+.search-page__form-card {
+  margin-bottom: var(--space-8);
+}
+
+.search-page__fields {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0 var(--space-5);
+}
+
+@media (max-width: 900px) {
+  .search-page__fields {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .search-page__fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Actions ─────────────────────────────────────────────── */
+
+.search-page__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* ── Spare Result ────────────────────────────────────────── */
+
+.search-page__spare-result {
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--success-light);
+  border-radius: var(--radius-md);
+}
+
+/* ── Results Section ─────────────────────────────────────── */
+
+.search-page__results-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+}
+
+/* ── Table Row ───────────────────────────────────────────── */
+
+.search-page__row {
+  cursor: pointer;
+}
+
+.search-page__row:hover {
+  background: var(--primary-50) !important;
+}
+
+.search-page__sn {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  background: var(--gray-100);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+}
