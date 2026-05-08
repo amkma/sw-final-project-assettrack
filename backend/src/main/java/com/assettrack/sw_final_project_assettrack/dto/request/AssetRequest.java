@@ -9,8 +9,8 @@ import jakarta.validation.constraints.*;
 @AllArgsConstructor
 @Builder
 public class AssetRequest {
-    @NotNull
-    private long userId;
+    
+    private Long userId;
     @NotBlank
     private String sn;
     @NotBlank

@@ -1,17 +1,18 @@
 package com.assettrack.sw_final_project_assettrack.repository;
 import com.assettrack.sw_final_project_assettrack.entity.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
 
-    List<Report> findByAssetId(Long assetId);
+    Page<Report> findByAssetId(Long assetId, Pageable pageable);
 
-    List<Report> findByUserId(Long userId); 
+    Page<Report> findByUserId(Long userId, Pageable pageable);
 
-    List<Report> findByStatus(String status);//
+    Page<Report> findByStatus(String status, Pageable pageable);
 
     
 
