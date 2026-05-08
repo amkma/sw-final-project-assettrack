@@ -44,7 +44,7 @@ export default function Sidebar({ collapsed, onToggle }) {
   const isAdminOrManager = user?.roleId >= 1
 
   const navItems = [
-    { to: '/', label: 'Dashboard', icon: icons.dashboard },
+    { to: '/dashboard', label: 'Dashboard', icon: icons.dashboard },
     { to: '/assets', label: 'Assets', icon: icons.assets },
     ...(isAdminOrManager
       ? [{ to: '/users', label: 'Users', icon: icons.users }]
@@ -86,7 +86,7 @@ export default function Sidebar({ collapsed, onToggle }) {
               <li key={item.to} className="sidebar__item">
                 <NavLink
                   to={item.to}
-                  end={item.to === '/'}
+                  end={item.to === '/dashboard'}
                   className={({ isActive }) =>
                     `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`
                   }
