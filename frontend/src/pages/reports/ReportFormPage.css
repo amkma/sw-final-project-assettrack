@@ -1,1 +1,26 @@
-/* ReportFormPage styles */
+/* ── Report Form Page ─────────────────────────────────────── */
+
+.report-form-page__card {
+  max-width: 640px;
+}
+
+/* ── Alert ────────────────────────────────────────────────── */
+
+.report-form-page__alert {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--danger-light);
+  color: var(--danger-dark);
+  border: 1px solid rgba(250, 82, 82, 0.2);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-6);
+  max-width: 640px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.report-form-page__alert svg {
+  flex-shrink: 0;
+}
