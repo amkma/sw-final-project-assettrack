@@ -18,32 +18,31 @@ public class JwtUtil {
 
     private final String secret;
     private final JWTVerifier verifier;
-    private final long expiryHours = 1; // 1 hour
+    private final long expiryHours = 1;
 
-public JwtUtil(@Value("${JWT_SECRET}") String secret) {
+    public JwtUtil(@Value("${JWT_SECRET:}") String secret) {
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException("JWT_SECRET environment variable is required");
+        }
 
-    if (secret == null || secret.isBlank()) {
-        throw new IllegalStateException("JWT_SECRET environment variable is required");
+        this.secret = secret;
+        this.verifier = JWT.require(Algorithm.HMAC256(secret)).build();
     }
 
-    this.secret = secret;
-
-    this.verifier = JWT.require(
-            Algorithm.HMAC256(secret)
-    ).build();
-}
     public String generateToken(User user) {
-        String role = mapRole(user.getRoleId());
+        return generateToken(user.getId(), AppRole.fromId(user.getRoleId()).name());
+    }
+
+    public String generateToken(Long userId, String role) {
         Instant now = Instant.now();
         Date exp = Date.from(now.plus(expiryHours, ChronoUnit.HOURS));
 
-        Algorithm alg = Algorithm.HMAC256(secret);
         return JWT.create()
-                .withClaim("userId", user.getId())
+                .withClaim("userId", userId)
                 .withClaim("role", role)
                 .withIssuedAt(Date.from(now))
                 .withExpiresAt(exp)
-                .sign(alg);
+                .sign(Algorithm.HMAC256(secret));
     }
 
     public boolean validateToken(String token) {
@@ -65,11 +64,5 @@ public JwtUtil(@Value("${JWT_SECRET}") String secret) {
 
     private DecodedJWT decode(String token) {
         return verifier.verify(token);
-    }
-
-    private String mapRole(long roleId) {
-        if (roleId == 1) return "MANAGER";
-        if (roleId == 2) return "ADMIN";
-        return "USER";
     }
 }

@@ -3,18 +3,26 @@ package com.assettrack.sw_final_project_assettrack.service;
 import com.assettrack.sw_final_project_assettrack.dto.request.UserLoginRequest;
 import com.assettrack.sw_final_project_assettrack.dto.request.UserRegisterRequest;
 import com.assettrack.sw_final_project_assettrack.dto.request.UserUpdateRequest;
+import com.assettrack.sw_final_project_assettrack.dto.response.AuthResponse;
 import com.assettrack.sw_final_project_assettrack.dto.response.UserResponse;
 import com.assettrack.sw_final_project_assettrack.entity.User;
 import com.assettrack.sw_final_project_assettrack.mapper.UserMapper;
 import com.assettrack.sw_final_project_assettrack.repository.UserRepository;
+import com.assettrack.sw_final_project_assettrack.security.AppRole;
+import com.assettrack.sw_final_project_assettrack.security.CustomUserDetails;
 import com.assettrack.sw_final_project_assettrack.security.JwtUtil;
-
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,67 +33,99 @@ public class UserService {
 	private final UserMapper userMapper;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtUtil jwtUtil;
+	private final AuthenticationManager authenticationManager;
 
+	@Transactional
 	public UserResponse register(UserRegisterRequest req) {
-		if (userRepository.existsByEmail(req.getEmail())) {
-			throw new RuntimeException("Email is already registered");
+		String email = normalizeEmail(req.getEmail());
+		if (userRepository.existsByEmailIgnoreCase(email)) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already registered");
 		}
 
 		User user = userMapper.toEntity(req);
-		String hashed = passwordEncoder.encode(user.getPassword());
-		user.setPassword(hashed);
-		User saved = userRepository.save(user);
-		return userMapper.toResponse(saved);
+		user.setEmail(email);
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+		return userMapper.toResponse(userRepository.save(user));
 	}
 
-	public String login(UserLoginRequest req) {
-		User user = userRepository.findByEmail(req.getEmail());
-		if (user == null) throw new RuntimeException("Invalid credentials");
+	public AuthResponse login(UserLoginRequest req) {
+		String email = normalizeEmail(req.getEmail());
 
-		if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
-			throw new RuntimeException("Invalid credentials");
+		try {
+			var authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(email, req.getPassword())
+			);
+
+			CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+			User user = userRepository.findById(principal.getId())
+					.orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
+
+			String token = jwtUtil.generateToken(user.getId(), principal.getRole());
+			return userMapper.toAuthResponse(token, user);
+		} catch (BadCredentialsException ex) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
 		}
-
-		return jwtUtil.generateToken(user);
 	}
 
 	public UserResponse getById(Long id) {
-		User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 		return userMapper.toResponse(user);
 	}
 
 	public List<UserResponse> listByRole(long roleId) {
-		List<User> users = userRepository.findByRoleId(roleId);
-		return users.stream().map(userMapper::toResponse).collect(Collectors.toList());
+		try {
+			AppRole.fromId(roleId);
+		} catch (IllegalArgumentException ex) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+		}
+		return userRepository.findByRoleId(roleId).stream()
+				.map(userMapper::toResponse)
+				.collect(Collectors.toList());
 	}
 
-	@PreAuthorize("hasRole('ADMIN')")
+	@Transactional
 	public UserResponse updateUser(UserUpdateRequest req) {
-		User user = userRepository.findById(req.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+		User user = userRepository.findById(req.getId())
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-		// if email is changing, ensure uniqueness
-		if (req.getEmail() != null && !req.getEmail().equals(user.getEmail())) {
-			if (userRepository.existsByEmail(req.getEmail())) {
-				throw new RuntimeException("Email is already registered by another user");
+		if (req.getEmail() != null) {
+			String email = normalizeEmail(req.getEmail());
+			if (!email.equalsIgnoreCase(user.getEmail()) && userRepository.existsByEmailIgnoreCaseAndIdNot(email, user.getId())) {
+				throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already registered by another user");
 			}
+			req.setEmail(email);
 		}
 
 		userMapper.updateEntityFromRequest(req, user);
 
-		if (req.getPassword() != null) {
+		if (req.getPassword() != null && !req.getPassword().isBlank()) {
 			user.setPassword(passwordEncoder.encode(req.getPassword()));
 		}
 
-		User saved = userRepository.save(user);
-		return userMapper.toResponse(saved);
+		return userMapper.toResponse(userRepository.save(user));
 	}
 
-	@PreAuthorize("hasRole('ADMIN')")
+	@Transactional
 	public UserResponse changeRole(Long userId, Long newRoleId) {
-		User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-		user.setRoleId(newRoleId);
-		User saved = userRepository.save(user);
-		return userMapper.toResponse(saved);
+		AppRole role;
+		try {
+			role = AppRole.fromId(newRoleId);
+		} catch (IllegalArgumentException ex) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+		}
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+		user.setRoleId(role.getId());
+		return userMapper.toResponse(userRepository.save(user));
 	}
 
+	private String normalizeEmail(String email) {
+		if (email == null || email.isBlank()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
+		}
+		return email.trim().toLowerCase(Locale.ROOT);
+	}
 }

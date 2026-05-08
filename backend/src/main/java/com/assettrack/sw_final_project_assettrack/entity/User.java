@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 @Getter
 @Setter
 @Builder
@@ -36,7 +36,8 @@ public class User {
     private String password;
 
     @Builder.Default
-    private long roleId=0;//0 user 1 manager 2 admin
+    @Column(nullable = false)
+    private long roleId = 0;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default

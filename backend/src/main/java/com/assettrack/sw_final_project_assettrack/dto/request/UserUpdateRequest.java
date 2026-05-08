@@ -19,6 +19,4 @@ public class UserUpdateRequest {
     private String email;
 
     private String password;
-    @NotNull(message = "role is required")
-    private Long roleId;//0 user 1 manager 2 admin
 }

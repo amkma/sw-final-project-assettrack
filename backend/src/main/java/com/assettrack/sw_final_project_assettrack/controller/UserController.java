@@ -3,16 +3,16 @@ package com.assettrack.sw_final_project_assettrack.controller;
 import com.assettrack.sw_final_project_assettrack.dto.request.UserLoginRequest;
 import com.assettrack.sw_final_project_assettrack.dto.request.UserRegisterRequest;
 import com.assettrack.sw_final_project_assettrack.dto.request.UserUpdateRequest;
+import com.assettrack.sw_final_project_assettrack.dto.response.AuthResponse;
 import com.assettrack.sw_final_project_assettrack.dto.response.UserResponse;
 import com.assettrack.sw_final_project_assettrack.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -38,18 +38,17 @@ public class UserController {
      * Throws exception on invalid credentials.
      */
     @PostMapping("/auth/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody UserLoginRequest req) {
-        String token = userService.login(req);
-        Map<String, String> response = new HashMap<>();
-        response.put("token", token);
+    public ResponseEntity<AuthResponse> login(@RequestBody UserLoginRequest req) {
+        AuthResponse response = userService.login(req);
         return ResponseEntity.ok(response);
     }
 
     /**
      * Retrieve a user by ID.
-     * Admin-only operation. Returns user details without email and password.
+        * Admins can access any profile, and users can access only their own profile.
      */
     @GetMapping("/users/{id}")
+    @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
         UserResponse response = userService.getById(id);
         return ResponseEntity.ok(response);
@@ -57,9 +56,10 @@ public class UserController {
 
     /**
      * List all users with a specific role.
-     * Admin-only operation. Query parameter: role (0=USER, 1=MANAGER, 2=ADMIN).
+     * Manager and admin operation. Query parameter: role (0=USER, 1=MANAGER, 2=ADMIN).
      */
     @GetMapping("/users")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<List<UserResponse>> listByRole(@RequestParam long role) {
         List<UserResponse> users = userService.listByRole(role);
         return ResponseEntity.ok(users);
@@ -67,9 +67,10 @@ public class UserController {
 
     /**
      * Update user details (firstName, lastName, email, password, role).
-     * Admin-only operation. Only admins can modify user information.
+     * Admins can update any user, and users can update only their own profile.
      */
     @PutMapping("/users")
+    @PreAuthorize("hasRole('ADMIN') or #req.id == principal.id")
     public ResponseEntity<UserResponse> updateUser(@RequestBody UserUpdateRequest req) {
         UserResponse response = userService.updateUser(req);
         return ResponseEntity.ok(response);
@@ -80,6 +81,7 @@ public class UserController {
      * Admin-only operation. Updates the roleId for the specified user.
      */
     @PutMapping("/users/{userId}/role")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> changeRole(@PathVariable Long userId, @RequestParam Long newRoleId) {
         UserResponse response = userService.changeRole(userId, newRoleId);
         return ResponseEntity.ok(response);

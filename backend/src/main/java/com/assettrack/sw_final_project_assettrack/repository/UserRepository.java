@@ -3,13 +3,16 @@ import com.assettrack.sw_final_project_assettrack.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User findByEmail(String email);
+    Optional<User> findByEmailIgnoreCase(String email);
 
-    boolean existsByEmail(String email); // to check if email is already registered
+    boolean existsByEmailIgnoreCase(String email);
 
-    List<User> findByRoleId(long role);
+    boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id);
+
+    List<User> findByRoleId(long roleId);
 }
