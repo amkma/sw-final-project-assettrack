@@ -1,10 +1,28 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import AuthLayout from './layouts/AuthLayout'
+import LoginPage from './pages/auth/LoginPage'
+import SignUpPage from './pages/auth/SignUpPage'
 import './App.css'
 
 function App() {
   return (
-    <div className="app">
-      <h1>AssetTrack</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* Auth routes */}
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+        </Route>
+
+        {/* Temporary home — will be replaced in Commit 11 */}
+        <Route path="*" element={
+          <div style={{ padding: '2rem' }}>
+            <h1>AssetTrack</h1>
+            <p>App is running. <a href="/login">Go to Login</a></p>
+          </div>
+        } />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
