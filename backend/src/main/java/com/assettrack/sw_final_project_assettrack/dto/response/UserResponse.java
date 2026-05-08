@@ -2,6 +2,7 @@ package com.assettrack.sw_final_project_assettrack.dto.response;
 import lombok.*;
 
 
+// the data coming from repository
 @Getter
 @Setter
 @NoArgsConstructor

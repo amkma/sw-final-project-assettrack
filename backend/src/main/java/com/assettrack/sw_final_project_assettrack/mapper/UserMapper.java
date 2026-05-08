@@ -2,7 +2,6 @@
 package com.assettrack.sw_final_project_assettrack.mapper;
 
 import com.assettrack.sw_final_project_assettrack.dto.request.UserRegisterRequest;
-import com.assettrack.sw_final_project_assettrack.dto.request.UserLoginRequest;
 import com.assettrack.sw_final_project_assettrack.dto.request.UserUpdateRequest;
 
 import com.assettrack.sw_final_project_assettrack.dto.response.UserResponse;
