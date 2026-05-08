@@ -1,1 +1,220 @@
-/* Navbar styles */
+/* ── Navbar ───────────────────────────────────────────────── */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--navbar-height);
+  padding: 0 var(--space-6);
+  background: var(--bg-navbar);
+  border-bottom: 1px solid var(--border-light);
+  z-index: var(--z-navbar);
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* ── Left Section ────────────────────────────────────────── */
+
+.navbar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.navbar__menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.navbar__menu-btn:hover {
+  background: var(--gray-100);
+  color: var(--text-primary);
+}
+
+/* ── Right Section ───────────────────────────────────────── */
+
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ── Icon Button (bell) ──────────────────────────────────── */
+
+.navbar__icon-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.navbar__icon-btn:hover {
+  background: var(--gray-100);
+  color: var(--text-primary);
+}
+
+/* Unread notification dot */
+.navbar__badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  border: 2px solid var(--bg-navbar);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ── User Button ─────────────────────────────────────────── */
+
+.navbar__user {
+  position: relative;
+  margin-left: var(--space-2);
+}
+
+.navbar__user-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.navbar__user-btn:hover {
+  background: var(--gray-50);
+}
+
+.navbar__user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.3;
+}
+
+.navbar__user-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.navbar__user-role {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.navbar__chevron {
+  color: var(--text-muted);
+  transition: transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.navbar__chevron--open {
+  transform: rotate(180deg);
+}
+
+/* ── Dropdown ────────────────────────────────────────────── */
+
+.navbar__dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 260px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  z-index: var(--z-dropdown);
+}
+
+.navbar__dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.navbar__dropdown-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.navbar__dropdown-email {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.navbar__dropdown-divider {
+  height: 1px;
+  background: var(--border-light);
+}
+
+.navbar__dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  text-align: left;
+}
+
+.navbar__dropdown-item:hover {
+  background: var(--gray-50);
+  color: var(--text-primary);
+}
+
+.navbar__dropdown-item--danger {
+  color: var(--danger);
+}
+
+.navbar__dropdown-item--danger:hover {
+  background: var(--danger-light);
+  color: var(--danger-dark);
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 var(--space-4);
+  }
+
+  .navbar__menu-btn {
+    display: flex;
+  }
+
+  .navbar__user-info {
+    display: none;
+  }
+
+  .navbar__chevron {
+    display: none;
+  }
+}

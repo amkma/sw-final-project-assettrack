@@ -1,26 +1,121 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+
+// Layouts
 import AuthLayout from './layouts/AuthLayout'
+import DashboardLayout from './layouts/DashboardLayout'
+
+// Guards
+import ProtectedRoute from './components/common/ProtectedRoute'
+import RoleGuard from './components/common/RoleGuard'
+
+// Auth pages
 import LoginPage from './pages/auth/LoginPage'
 import SignUpPage from './pages/auth/SignUpPage'
+
+// Dashboard
+import DashboardPage from './pages/dashboard/DashboardPage'
+
+// Assets
+import AssetsListPage from './pages/assets/AssetsListPage'
+import AssetDetailPage from './pages/assets/AssetDetailPage'
+import AssetFormPage from './pages/assets/AssetFormPage'
+
+// Users
+import UsersListPage from './pages/users/UsersListPage'
+import UserDetailPage from './pages/users/UserDetailPage'
+
+// Reports
+import ReportsListPage from './pages/reports/ReportsListPage'
+import ReportFormPage from './pages/reports/ReportFormPage'
+
+// Notifications & Search
+import NotificationsPage from './pages/notifications/NotificationsPage'
+import SearchPage from './pages/search/SearchPage'
+
+// 404
+import NotFoundPage from './pages/NotFoundPage'
+
 import './App.css'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Auth routes */}
+        {/* ── Public Auth Routes ─────────────────────────── */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
         </Route>
 
-        {/* Temporary home — will be replaced in Commit 11 */}
-        <Route path="*" element={
-          <div style={{ padding: '2rem' }}>
-            <h1>AssetTrack</h1>
-            <p>App is running. <a href="/login">Go to Login</a></p>
-          </div>
-        } />
+        {/* ── Protected Dashboard Routes ─────────────────── */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          {/* Dashboard — all roles */}
+          <Route path="/" element={<DashboardPage />} />
+
+          {/* Assets — all roles can view */}
+          <Route path="/assets" element={<AssetsListPage />} />
+          <Route path="/assets/:id" element={<AssetDetailPage />} />
+
+          {/* Assets — Admin only (create / edit) */}
+          <Route
+            path="/assets/new"
+            element={
+              <RoleGuard minRole={2}>
+                <AssetFormPage />
+              </RoleGuard>
+            }
+          />
+          <Route
+            path="/assets/:id/edit"
+            element={
+              <RoleGuard minRole={2}>
+                <AssetFormPage />
+              </RoleGuard>
+            }
+          />
+
+          {/* Users — Admin / Manager */}
+          <Route
+            path="/users"
+            element={
+              <RoleGuard minRole={1}>
+                <UsersListPage />
+              </RoleGuard>
+            }
+          />
+          <Route
+            path="/users/:id"
+            element={
+              <RoleGuard minRole={1}>
+                <UserDetailPage />
+              </RoleGuard>
+            }
+          />
+
+          {/* Reports — list is Admin/Manager, create is all roles */}
+          <Route
+            path="/reports"
+            element={
+              <RoleGuard minRole={1}>
+                <ReportsListPage />
+              </RoleGuard>
+            }
+          />
+          <Route path="/reports/new" element={<ReportFormPage />} />
+
+          {/* Notifications & Search — all roles */}
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/search" element={<SearchPage />} />
+        </Route>
+
+        {/* ── 404 Catch-all ──────────────────────────────── */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   )
