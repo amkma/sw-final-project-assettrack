@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import TextType from '../components/common/TextType'
+import DotGrid from '../components/common/DotGrid'
 import './LandingPage.css'
 
 export default function LandingPage() {
@@ -39,22 +40,7 @@ export default function LandingPage() {
           duration: 0.6,
         }, '-=0.2')
 
-      // Floating particles animation
-      if (particlesRef.current) {
-        const dots = particlesRef.current.querySelectorAll('.landing-page__particle')
-        dots.forEach((dot) => {
-          gsap.to(dot, {
-            y: 'random(-60, 60)',
-            x: 'random(-40, 40)',
-            opacity: 'random(0.15, 0.5)',
-            duration: 'random(4, 8)',
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: 'random(0, 3)',
-          })
-        })
-      }
+      // Particles replaced by DotGrid
     }, heroRef)
 
     return () => ctx.revert()
@@ -62,20 +48,19 @@ export default function LandingPage() {
 
   return (
     <div className="landing-page" ref={heroRef}>
-      {/* Animated Background Particles */}
-      <div className="landing-page__particles" ref={particlesRef}>
-        {Array.from({ length: 20 }).map((_, i) => (
-          <div
-            key={i}
-            className="landing-page__particle"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: `${Math.random() * 6 + 2}px`,
-              height: `${Math.random() * 6 + 2}px`,
-            }}
-          />
-        ))}
+      {/* Animated Background Grid */}
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+        <DotGrid
+          dotSize={2}
+          gap={16}
+          baseColor="#1a1d3a"
+          activeColor="#748ffc"
+          proximity={140}
+          shockRadius={200}
+          shockStrength={3}
+          resistance={800}
+          returnDuration={1.5}
+        />
       </div>
 
       {/* Top Navigation Bar */}
@@ -144,6 +129,7 @@ export default function LandingPage() {
             cursorBlinkDuration={0.5}
           />
         </div>
+
 
         {/* CTA Buttons */}
         <div className="landing-page__buttons" ref={buttonsRef}>

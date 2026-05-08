@@ -1,13 +1,23 @@
 import { Outlet } from 'react-router-dom'
+import DotGrid from '../components/common/DotGrid'
 import './AuthLayout.css'
 
 export default function AuthLayout() {
   return (
     <div className="auth-layout">
-      <div className="auth-layout__background">
-        <div className="auth-layout__shape auth-layout__shape--1"></div>
-        <div className="auth-layout__shape auth-layout__shape--2"></div>
-        <div className="auth-layout__shape auth-layout__shape--3"></div>
+      {/* Animated Background Grid */}
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+        <DotGrid
+          dotSize={2}
+          gap={16}
+          baseColor="#1a1d3a"
+          activeColor="#748ffc"
+          proximity={140}
+          shockRadius={200}
+          shockStrength={3}
+          resistance={800}
+          returnDuration={1.5}
+        />
       </div>
 
       <div className="auth-layout__container">
