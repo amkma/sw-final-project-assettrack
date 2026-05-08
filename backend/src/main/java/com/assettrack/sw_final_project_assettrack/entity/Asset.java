@@ -26,6 +26,9 @@ public class Asset {
     @Column(nullable = false)
     private String brand;
 
+    @Builder.Default
+    private String status="AVAILABLE"; // default status is working
+
     @Column(nullable = false)
     private String model;
 

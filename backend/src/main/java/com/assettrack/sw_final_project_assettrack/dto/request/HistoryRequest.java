@@ -19,7 +19,6 @@ public class HistoryRequest {
     @NotNull(message = "from UserId is required")
     private long fromUserId;
 
-    @NotNull(message = "to UserId is required")
     private long toUserId;
 
     @NotBlank(message = "Note is required")

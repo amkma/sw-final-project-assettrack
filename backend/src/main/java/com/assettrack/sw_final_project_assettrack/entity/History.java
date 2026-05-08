@@ -29,10 +29,8 @@ public class History {
     private Asset asset;
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private User fromUser;
-    
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private User toUser ;
+    private User user;
+
 
    
 }
