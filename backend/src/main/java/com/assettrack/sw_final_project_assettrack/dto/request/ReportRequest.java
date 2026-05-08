@@ -14,4 +14,6 @@ public class ReportRequest {
     private long assetId;
     @NotBlank
     private String description;
+
+    private String status;
 }
