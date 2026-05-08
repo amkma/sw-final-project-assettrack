@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import AuthLayout from './layouts/AuthLayout'
 import LoginPage from './pages/auth/LoginPage'
+import SignUpPage from './pages/auth/SignUpPage'
 import './App.css'
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
         {/* Auth routes */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
         </Route>
 
         {/* Temporary home — will be replaced in Commit 11 */}
