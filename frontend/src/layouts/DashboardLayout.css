@@ -1,1 +1,42 @@
-/* DashboardLayout styles */
+/* ── Dashboard Layout ─────────────────────────────────────── */
+
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.dashboard-layout__main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: margin-left var(--transition-base);
+}
+
+.dashboard-layout--collapsed .dashboard-layout__main {
+  margin-left: var(--sidebar-collapsed);
+}
+
+.dashboard-layout__content {
+  flex: 1;
+  padding: var(--space-8);
+  background: var(--bg-body);
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .dashboard-layout__main {
+    margin-left: 0;
+  }
+
+  .dashboard-layout--collapsed .dashboard-layout__main {
+    margin-left: 0;
+  }
+
+  .dashboard-layout__content {
+    padding: var(--space-4);
+  }
+}

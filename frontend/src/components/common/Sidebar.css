@@ -1,1 +1,209 @@
-/* Sidebar styles */
+/* ── Sidebar ──────────────────────────────────────────────── */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  background: var(--bg-sidebar);
+  display: flex;
+  flex-direction: column;
+  z-index: var(--z-sidebar);
+  transition: width var(--transition-base), transform var(--transition-base);
+  overflow: hidden;
+}
+
+.sidebar--collapsed {
+  width: var(--sidebar-collapsed);
+}
+
+/* ── Overlay (mobile) ────────────────────────────────────── */
+
+.sidebar-overlay {
+  display: none;
+}
+
+/* ── Brand ────────────────────────────────────────────────── */
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  min-height: var(--navbar-height);
+  flex-shrink: 0;
+}
+
+.sidebar__logo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar__brand-text {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* ── Navigation ──────────────────────────────────────────── */
+
+.sidebar__nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-3);
+}
+
+.sidebar__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  color: var(--text-sidebar);
+  font-size: var(--text-base);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+}
+
+.sidebar__link:hover {
+  background: var(--bg-sidebar-hover);
+  color: var(--text-sidebar-active);
+}
+
+.sidebar__link--active {
+  background: var(--bg-sidebar-active);
+  color: var(--text-sidebar-active);
+}
+
+.sidebar__link--active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--primary-500);
+}
+
+.sidebar__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.sidebar__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Collapse Toggle ─────────────────────────────────────── */
+
+.sidebar__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  color: var(--text-sidebar);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  transition: color var(--transition-fast), background var(--transition-fast);
+  white-space: nowrap;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.sidebar__toggle:hover {
+  color: var(--text-sidebar-active);
+  background: var(--bg-sidebar-hover);
+}
+
+.sidebar__toggle-icon {
+  flex-shrink: 0;
+  transition: transform var(--transition-base);
+}
+
+.sidebar__toggle-icon--flipped {
+  transform: rotate(180deg);
+}
+
+/* ── Collapsed State ─────────────────────────────────────── */
+
+.sidebar--collapsed .sidebar__brand {
+  justify-content: center;
+  padding: var(--space-5) var(--space-2);
+}
+
+.sidebar--collapsed .sidebar__nav {
+  padding: var(--space-3) var(--space-2);
+}
+
+.sidebar--collapsed .sidebar__link {
+  justify-content: center;
+  padding: 10px;
+}
+
+.sidebar--collapsed .sidebar__link--active::before {
+  display: none;
+}
+
+.sidebar--collapsed .sidebar__toggle {
+  justify-content: center;
+  padding: var(--space-4) var(--space-2);
+}
+
+/* ── Responsive (mobile) ─────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    width: var(--sidebar-width);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+  }
+
+  /* On mobile, "collapsed" = hidden, NOT collapsed = open */
+  .sidebar:not(.sidebar--collapsed) {
+    transform: translateX(0);
+  }
+
+  .sidebar--collapsed {
+    width: var(--sidebar-width);
+    transform: translateX(-100%);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: var(--bg-overlay);
+    z-index: calc(var(--z-sidebar) - 1);
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  /* Hide the desktop collapse toggle on mobile */
+  .sidebar__toggle {
+    display: none;
+  }
+}
