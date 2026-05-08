@@ -55,6 +55,15 @@ export function AuthProvider({ children }) {
     setUser(null)
   }, [])
 
+  // Demo login — sets mock user data without calling the API
+  const demoLogin = useCallback((mockUser) => {
+    const fakeToken = 'demo-token-' + Date.now()
+    localStorage.setItem('token', fakeToken)
+    localStorage.setItem('user', JSON.stringify(mockUser))
+    setToken(fakeToken)
+    setUser(mockUser)
+  }, [])
+
   const isAuthenticated = !!token
 
   const value = {
@@ -65,6 +74,7 @@ export function AuthProvider({ children }) {
     login,
     signup,
     logout,
+    demoLogin,
   }
 
   return (

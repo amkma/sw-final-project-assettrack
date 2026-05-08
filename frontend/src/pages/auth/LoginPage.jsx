@@ -3,9 +3,33 @@ import { Link, useNavigate } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 import './LoginPage.css'
 
+const DEMO_USERS = {
+  admin: {
+    id: 1,
+    firstName: 'Admin',
+    lastName: 'User',
+    email: 'admin@assettrack.com',
+    roleId: 2,
+  },
+  manager: {
+    id: 2,
+    firstName: 'Manager',
+    lastName: 'User',
+    email: 'manager@assettrack.com',
+    roleId: 1,
+  },
+  developer: {
+    id: 3,
+    firstName: 'Developer',
+    lastName: 'User',
+    email: 'dev@assettrack.com',
+    roleId: 0,
+  },
+}
+
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const { login, demoLogin } = useAuth()
 
   const [formData, setFormData] = useState({
     email: '',
@@ -61,6 +85,11 @@ export default function LoginPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  function handleDemoLogin(role) {
+    demoLogin(DEMO_USERS[role])
+    navigate('/', { replace: true })
   }
 
   return (
@@ -139,6 +168,49 @@ export default function LoginPage() {
           Sign Up
         </Link>
       </p>
+
+      {/* ── Demo Login Buttons ──────────────────────────── */}
+      <div className="demo-login">
+        <div className="demo-login__divider">
+          <span>Or try a demo account</span>
+        </div>
+        <div className="demo-login__buttons">
+          <button
+            type="button"
+            className="btn demo-login__btn demo-login__btn--admin"
+            onClick={() => handleDemoLogin('admin')}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 1a2 2 0 100 4 2 2 0 000-4zM4 7a4 4 0 018 0v1a1 1 0 01-1 1H5a1 1 0 01-1-1V7zm3 4h2v1.5l1.5 1L9 15H7l-1.5-1.5L7 12.5V11z" />
+            </svg>
+            Admin
+            <span className="demo-login__badge">Full Access</span>
+          </button>
+          <button
+            type="button"
+            className="btn demo-login__btn demo-login__btn--manager"
+            onClick={() => handleDemoLogin('manager')}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 1a2 2 0 100 4 2 2 0 000-4zM4 7a4 4 0 018 0v1a1 1 0 01-1 1H5a1 1 0 01-1-1V7zm-1 5h10v3H3v-3z" />
+            </svg>
+            Manager
+            <span className="demo-login__badge">Users + Reports</span>
+          </button>
+          <button
+            type="button"
+            className="btn demo-login__btn demo-login__btn--developer"
+            onClick={() => handleDemoLogin('developer')}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 1a2 2 0 100 4 2 2 0 000-4zM4 7a4 4 0 018 0v1a1 1 0 01-1 1H5a1 1 0 01-1-1V7zm0 4h8v4H4v-4z" />
+            </svg>
+            Developer
+            <span className="demo-login__badge">Basic Access</span>
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
+

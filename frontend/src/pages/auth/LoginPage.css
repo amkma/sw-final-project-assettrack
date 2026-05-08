@@ -82,3 +82,94 @@
 .login-page__link:hover {
   color: var(--primary-800);
 }
+
+
+/* ── Demo Login Section ──────────────────────────────────── */
+
+.demo-login {
+  margin-top: var(--space-6);
+}
+
+.demo-login__divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.demo-login__divider::before,
+.demo-login__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-default);
+}
+
+.demo-login__divider span {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.demo-login__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.demo-login__btn {
+  justify-content: flex-start;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.demo-login__btn--admin {
+  background: rgba(76, 110, 245, 0.08);
+  color: var(--primary-700);
+  border: 1px solid rgba(76, 110, 245, 0.2);
+}
+.demo-login__btn--admin:hover {
+  background: rgba(76, 110, 245, 0.15);
+  border-color: var(--primary-400);
+  transform: translateY(-1px);
+}
+
+.demo-login__btn--manager {
+  background: rgba(51, 154, 240, 0.08);
+  color: var(--info-dark);
+  border: 1px solid rgba(51, 154, 240, 0.2);
+}
+.demo-login__btn--manager:hover {
+  background: rgba(51, 154, 240, 0.15);
+  border-color: var(--info);
+  transform: translateY(-1px);
+}
+
+.demo-login__btn--developer {
+  background: rgba(64, 192, 87, 0.08);
+  color: var(--success-dark);
+  border: 1px solid rgba(64, 192, 87, 0.2);
+}
+.demo-login__btn--developer:hover {
+  background: rgba(64, 192, 87, 0.15);
+  border-color: var(--success);
+  transform: translateY(-1px);
+}
+
+.demo-login__badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.06);
+  color: inherit;
+  opacity: 0.7;
+}
+
