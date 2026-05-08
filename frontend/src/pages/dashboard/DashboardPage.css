@@ -1,1 +1,121 @@
-/* DashboardPage styles */
+/* ── Dashboard Page ───────────────────────────────────────── */
+
+/* ── Stat Cards Grid ─────────────────────────────────────── */
+
+.dashboard-page__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+@media (max-width: 1024px) {
+  .dashboard-page__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-page__stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Charts Grid ─────────────────────────────────────────── */
+
+.dashboard-page__charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+@media (max-width: 768px) {
+  .dashboard-page__charts {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Loading State ───────────────────────────────────────── */
+
+.dashboard-page__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-16) 0;
+  color: var(--text-muted);
+  gap: var(--space-4);
+}
+
+.dashboard-page__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--gray-200);
+  border-top-color: var(--primary-500);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ── Recent Activity Timeline ────────────────────────────── */
+
+.dashboard-page__timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.dashboard-page__timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border-light);
+  position: relative;
+}
+
+.dashboard-page__timeline-item:last-child {
+  border-bottom: none;
+}
+
+.dashboard-page__timeline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary-500);
+  flex-shrink: 0;
+  margin-top: 6px;
+  box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+.dashboard-page__timeline-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard-page__timeline-text {
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.dashboard-page__timeline-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.dashboard-page__timeline-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* ── Activity card ───────────────────────────────────────── */
+
+.dashboard-page__activity {
+  animation: fadeIn 0.5s ease-out 0.2s both;
+}

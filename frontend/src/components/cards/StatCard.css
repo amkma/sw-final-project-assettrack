@@ -1,1 +1,90 @@
-/* StatCard styles */
+/* ── StatCard ─────────────────────────────────────────────── */
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+  animation: fadeIn 0.4s ease-out both;
+}
+
+.stat-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ── Icon Wrap ───────────────────────────────────────────── */
+
+.stat-card__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  flex-shrink: 0;
+}
+
+/* Color variants */
+.stat-card--primary .stat-card__icon-wrap {
+  background: var(--primary-100);
+  color: var(--primary-600);
+}
+.stat-card--success .stat-card__icon-wrap {
+  background: var(--success-light);
+  color: var(--success-dark);
+}
+.stat-card--warning .stat-card__icon-wrap {
+  background: var(--warning-light);
+  color: var(--warning-dark);
+}
+.stat-card--danger .stat-card__icon-wrap {
+  background: var(--danger-light);
+  color: var(--danger-dark);
+}
+.stat-card--info .stat-card__icon-wrap {
+  background: var(--info-light);
+  color: var(--info-dark);
+}
+
+/* ── Content ─────────────────────────────────────────────── */
+
+.stat-card__content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.stat-card__value {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.stat-card__title {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.stat-card__trend {
+  font-size: var(--text-xs);
+  color: var(--success);
+  font-weight: 600;
+  margin-top: var(--space-1);
+}
+
+/* ── Staggered Animation ─────────────────────────────────── */
+
+.stat-card:nth-child(1) { animation-delay: 0s; }
+.stat-card:nth-child(2) { animation-delay: 0.05s; }
+.stat-card:nth-child(3) { animation-delay: 0.1s; }
+.stat-card:nth-child(4) { animation-delay: 0.15s; }
