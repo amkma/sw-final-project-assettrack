@@ -5,5 +5,7 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-
+    List<Notification> findByUserIdOrderByDateDesc(Long userId);
+    long countByUserIdAndReadFalse(Long userId); // to count unread notifications for a user
+    
 }

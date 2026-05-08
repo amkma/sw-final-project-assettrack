@@ -4,19 +4,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 public interface AssetRepository extends JpaRepository<Asset, Long> {
 
-    Asset findBySerialNumber(String serialNumber);
+    Asset findBySn(String serialNumber);
 
-    boolean existsBySerialNumber(String serialNumber);
+    boolean existsBySn(String serialNumber);
 
-    List<Asset> findByStatus(String status);// we forget to add status in entity
+    List<Asset> findByStatus(String status);// we forgot to add status in entity
 
     List<Asset> findByType(String type);
 
     List<Asset> findByBrand(String brand);
 
-    List<Asset> findByCurrentOwner(Long userId);
+    List<Asset> findByUserId(Long userId);
 
-    List<Asset> findSparePart(String type,String status); // to find available spare parts of a specific type
+    List<Asset> findByTypeAndStatus(String type,String status); // to find available spare parts of a specific type
     //and status =available  
 
 }

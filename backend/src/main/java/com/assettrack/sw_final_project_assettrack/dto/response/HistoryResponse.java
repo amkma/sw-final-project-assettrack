@@ -16,4 +16,6 @@ public class HistoryResponse {
     private LocalDate assignedAt;
     
     private LocalDate returnedAt;
+
+    private long userId;
 }

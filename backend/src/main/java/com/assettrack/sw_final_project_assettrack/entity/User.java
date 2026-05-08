@@ -43,13 +43,9 @@ public class User {
     private List<Asset> assets = new ArrayList<>();
     
 
-    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
-    private List<History> fromHistories = new ArrayList<>();
-    
-    @OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<History> toHistories = new ArrayList<>();
+    private List<History> history = new ArrayList<>();
     
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
