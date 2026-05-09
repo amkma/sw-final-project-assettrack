@@ -1,6 +1,7 @@
 package com.assettrack.sw_final_project_assettrack.controller;
 
 import com.assettrack.sw_final_project_assettrack.dto.request.AssetRequest;
+import com.assettrack.sw_final_project_assettrack.dto.request.AssetSearchRequest;
 import com.assettrack.sw_final_project_assettrack.dto.response.AssetResponse;
 import com.assettrack.sw_final_project_assettrack.service.AssetService;
 import jakarta.validation.Valid;
@@ -82,5 +83,14 @@ public class AssetController {
             Pageable pageable
     ) {
         return assetService.findAvailableSpareParts(type, pageable);
+    }
+
+
+    @PostMapping("/search")
+    public Page<AssetResponse> searchAssets(
+            @RequestBody AssetSearchRequest request,
+            Pageable pageable
+    ) {
+        return assetService.searchAssets(request, pageable);
     }
 }
