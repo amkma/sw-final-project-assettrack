@@ -38,6 +38,9 @@ public class Asset {
     @Column(nullable = false)
     private LocalDate warrantyEndDate;
 
+    @Builder.Default
+    private boolean warrantyNotified = false;
+
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(nullable = true)

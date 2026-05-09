@@ -13,9 +13,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReportService {
 
     private final ReportRepository reportRepository;
@@ -28,6 +30,7 @@ public class ReportService {
         ================= USER METHODS =================
      */
 
+    @Transactional
     public ReportResponse createReport(Long userId, ReportRequest request) {
 
         User user = userRepository.findById(userId)
@@ -95,6 +98,7 @@ public class ReportService {
                 .map(reportMapper::toResponse);
     }
 
+    @Transactional
     public ReportResponse updateStatus(Long id, String status) {
 
         Report report = reportRepository.findById(id)
@@ -114,6 +118,7 @@ public class ReportService {
         return reportMapper.toResponse(saved);
     }
 
+    @Transactional
     public void deleteReport(Long id) {
 
         Report report = reportRepository.findById(id)

@@ -17,6 +17,9 @@ import java.util.List;
  * Scheduled task that runs daily to check for assets with
  * expired or soon-to-expire warranties and sends notifications
  * to all Admins (roleId=2) and Managers (roleId=1).
+ *
+ * Each asset is only notified about once — the warrantyNotified
+ * flag prevents duplicate alerts on subsequent runs.
  */
 @Component
 @RequiredArgsConstructor
@@ -32,6 +35,7 @@ public class WarrantyExpirationScheduler {
      * Checks for warranties that:
      *   - Have already expired (warrantyEndDate < today)
      *   - Will expire within the next 30 days
+     * Only processes assets that have NOT been notified yet.
      */
     @Scheduled(cron = "0 0 8 * * *")
     @Transactional
@@ -41,11 +45,9 @@ public class WarrantyExpirationScheduler {
         LocalDate today = LocalDate.now();
         LocalDate thirtyDaysFromNow = today.plusDays(30);
 
-        // Get all assets whose warranty ends between today and 30 days from now (expiring soon)
-        List<Asset> expiringSoon = assetRepository.findByWarrantyEndDateBetween(today, thirtyDaysFromNow);
-
-        // Get all assets whose warranty has already expired (today or before)
-        List<Asset> expired = assetRepository.findByWarrantyEndDateBefore(today);
+        // Get only un-notified assets
+        List<Asset> expiringSoon = assetRepository.findByWarrantyEndDateBetweenAndWarrantyNotifiedFalse(today, thirtyDaysFromNow);
+        List<Asset> expired = assetRepository.findByWarrantyEndDateBeforeAndWarrantyNotifiedFalse(today);
 
         // Get all admins and managers to notify
         List<User> admins = userRepository.findByRoleId(2L);
@@ -62,6 +64,9 @@ public class WarrantyExpirationScheduler {
             for (User manager : managers) {
                 notificationService.createNotification(manager.getId(), message);
             }
+
+            asset.setWarrantyNotified(true);
+            assetRepository.save(asset);
         }
 
         // Notify about already expired
@@ -75,6 +80,9 @@ public class WarrantyExpirationScheduler {
             for (User manager : managers) {
                 notificationService.createNotification(manager.getId(), message);
             }
+
+            asset.setWarrantyNotified(true);
+            assetRepository.save(asset);
         }
 
         log.info("Warranty check complete. Expiring soon: {}, Already expired: {}",

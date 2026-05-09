@@ -15,11 +15,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AssetService {
 
     private final AssetRepository assetRepository;
@@ -27,6 +29,7 @@ public class AssetService {
     private final HistoryRepository historyRepository;
     private final AssetMapper assetMapper;
 
+    @Transactional
     public AssetResponse createAsset(AssetRequest request) {
 
         if (assetRepository.existsBySn(request.getSn())) {
@@ -75,6 +78,7 @@ public class AssetService {
                 .map(assetMapper::toResponse);
     }
 
+    @Transactional
     public AssetResponse updateAsset(Long id, AssetRequest request) {
 
         Asset asset = assetRepository.findById(id)
@@ -154,6 +158,7 @@ public class AssetService {
     }
 
 
+    @Transactional
     public void deleteAsset(Long id) {
         Asset asset = assetRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Asset not found"));

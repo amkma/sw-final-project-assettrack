@@ -41,8 +41,8 @@ public interface AssetRepository extends JpaRepository<Asset, Long>,JpaSpecifica
 
     Page<Asset> findByUserIdAndBrand(Long userId, String brand, Pageable pageable);
 
-    // Warranty expiration queries
-    List<Asset> findByWarrantyEndDateBetween(LocalDate start, LocalDate end);
+    // Warranty expiration queries — only assets not yet notified
+    List<Asset> findByWarrantyEndDateBetweenAndWarrantyNotifiedFalse(LocalDate start, LocalDate end);
 
-    List<Asset> findByWarrantyEndDateBefore(LocalDate date);
+    List<Asset> findByWarrantyEndDateBeforeAndWarrantyNotifiedFalse(LocalDate date);
 }
