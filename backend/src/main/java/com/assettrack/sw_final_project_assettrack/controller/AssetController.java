@@ -84,4 +84,11 @@ public class AssetController {
     ) {
         return assetService.findAvailableSpareParts(type, pageable);
     }
+    @PostMapping("/search")
+    public Page<AssetResponse> searchAssets(
+            @RequestBody AssetSearchRequest request,
+            Pageable pageable
+    ) {
+        return assetService.searchAssets(request, pageable);
+    }
 }
