@@ -25,7 +25,7 @@ public class NotificationService {
      * Get notifications with pageable
      */
     public Page<NotificationResponse> getUserNotifications(Long userId, Pageable pageable) {
-        return notificationRepository.findByUserId(userId, pageable)
+        return notificationRepository.findByUserIdOrderByDateDescIdDesc(userId, pageable)
                 .map(notificationMapper::toResponse);
     }
 

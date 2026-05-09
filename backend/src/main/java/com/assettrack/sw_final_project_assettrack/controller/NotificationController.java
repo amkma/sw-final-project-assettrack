@@ -44,10 +44,4 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.createNotification(userId, message));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/warranty-check")
-    public ResponseEntity<String> triggerWarrantyCheck() {
-        warrantyExpirationScheduler.checkWarrantyExpirations();
-        return ResponseEntity.ok("Warranty check completed");
-    }
 }

@@ -21,7 +21,3 @@ export const createNotification = (userId, message) => API.post(`/notifications/
   headers: { 'Content-Type': 'text/plain' }
 });
 
-/**
- * Trigger a manual warranty expiration check (Admin only).
- */
-export const triggerWarrantyCheck = () => API.post('/notifications/warranty-check');

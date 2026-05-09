@@ -82,6 +82,7 @@ public class WarrantyExpirationScheduler {
             }
 
             asset.setWarrantyNotified(true);
+            asset.setStatus("EXPIRED");
             assetRepository.save(asset);
         }
 

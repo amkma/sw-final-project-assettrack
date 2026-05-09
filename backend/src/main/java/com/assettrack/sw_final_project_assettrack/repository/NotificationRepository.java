@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    Page<Notification> findByUserId(Long userId, Pageable pageable);
+    Page<Notification> findByUserIdOrderByDateDescIdDesc(Long userId, Pageable pageable);
     
     List<Notification> findByUserId(Long userId); // For internal use like marking all as read
 

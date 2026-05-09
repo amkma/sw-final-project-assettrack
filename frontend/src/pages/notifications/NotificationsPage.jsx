@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import useAuth from '../../hooks/useAuth'
-import { getNotifications, markAsRead, triggerWarrantyCheck } from '../../api/notificationApi'
+import { getNotifications, markAsRead } from '../../api/notificationApi'
 import { groupByDate } from '../../utils/helpers'
 import NotificationCard from '../../components/cards/NotificationCard'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
@@ -11,7 +11,6 @@ export default function NotificationsPage() {
   const isAdmin = user?.roleId === 2
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
-  const [warrantyChecking, setWarrantyChecking] = useState(false)
 
   async function fetchNotifications() {
     if (!user?.id) return
@@ -41,19 +40,6 @@ export default function NotificationsPage() {
     }
   }
 
-  async function handleWarrantyCheck() {
-    setWarrantyChecking(true)
-    try {
-      await triggerWarrantyCheck()
-      // Re-fetch notifications to show new warranty alerts
-      await fetchNotifications()
-    } catch {
-      alert('Failed to run warranty check.')
-    } finally {
-      setWarrantyChecking(false)
-    }
-  }
-
   const unreadCount = notifications.filter((n) => !n.isRead).length
   const grouped = groupByDate(notifications, 'date')
   const dateKeys = Object.keys(grouped)
@@ -71,18 +57,6 @@ export default function NotificationsPage() {
           </p>
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-          {isAdmin && (
-            <button
-              className="btn btn-secondary btn-sm"
-              onClick={handleWarrantyCheck}
-              disabled={warrantyChecking}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 1a7 7 0 100 14A7 7 0 008 1zM7 5h2v4H7V5zm0 5h2v2H7v-2z" />
-              </svg>
-              {warrantyChecking ? 'Checking…' : 'Run Warranty Check'}
-            </button>
-          )}
           {unreadCount > 0 && (
             <button className="btn btn-secondary btn-sm" onClick={handleMarkAllRead}>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
