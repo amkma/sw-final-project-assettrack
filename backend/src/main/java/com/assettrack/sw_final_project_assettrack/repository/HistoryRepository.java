@@ -14,4 +14,6 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
     Optional<History> findByAssetIdAndReturnedAtIsNull(Long assetId);
 
+    Optional<History> findTopByAssetIdOrderByAssignedAtDesc(Long assetId);
+
 }

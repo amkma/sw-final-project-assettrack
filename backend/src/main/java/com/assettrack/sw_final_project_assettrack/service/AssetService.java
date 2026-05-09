@@ -6,6 +6,7 @@ import com.assettrack.sw_final_project_assettrack.entity.Asset;
 import com.assettrack.sw_final_project_assettrack.entity.User;
 import com.assettrack.sw_final_project_assettrack.mapper.AssetMapper;
 import com.assettrack.sw_final_project_assettrack.repository.AssetRepository;
+import com.assettrack.sw_final_project_assettrack.repository.HistoryRepository;
 import com.assettrack.sw_final_project_assettrack.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ public class AssetService {
 
     private final AssetRepository assetRepository;
     private final UserRepository userRepository;
+    private final HistoryRepository historyRepository;
     private final AssetMapper assetMapper;
 
     public AssetResponse createAsset(AssetRequest request) {
@@ -124,5 +126,15 @@ public class AssetService {
     public Page<AssetResponse> findAvailableSpareParts(String type, Pageable pageable) {
         return assetRepository.findByTypeAndStatus(type, "AVAILABLE", pageable)
                 .map(assetMapper::toResponse);
+    }
+
+    public Page<AssetResponse> getAvailableSpareLaptops(Pageable pageable) {
+        return assetRepository.findByTypeAndStatus("Laptop", "AVAILABLE", pageable)
+                .map(asset -> {
+                    String lastOwnerName = historyRepository.findTopByAssetIdOrderByAssignedAtDesc(asset.getId())
+                            .map(history -> history.getUser().getFirstName() + " " + history.getUser().getLastName())
+                            .orElse("N/A");
+                    return assetMapper.toResponse(asset, lastOwnerName);
+                });
     }
 }

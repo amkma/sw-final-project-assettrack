@@ -83,4 +83,9 @@ public class AssetController {
     ) {
         return assetService.findAvailableSpareParts(type, pageable);
     }
+
+    @GetMapping("/spare-laptops")
+    public Page<AssetResponse> getAvailableSpareLaptops(Pageable pageable) {
+        return assetService.getAvailableSpareLaptops(pageable);
+    }
 }

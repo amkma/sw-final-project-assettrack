@@ -16,5 +16,6 @@ public class AssetResponse {
      private String model;
      private LocalDate purchaseDate;
      private LocalDate warrantyEndDate;
-     
+     private String status;
+     private String lastOwnerName;
 }

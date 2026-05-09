@@ -27,8 +27,15 @@ public class AssetMapper {
                 .type(asset.getType())
                 .brand(asset.getBrand())
                 .model(asset.getModel())
+                .status(asset.getStatus())
                 .purchaseDate(asset.getPurchaseDate())
                 .warrantyEndDate(asset.getWarrantyEndDate())
                 .build();
+    }
+
+    public AssetResponse toResponse(Asset asset, String lastOwnerName) {
+        AssetResponse response = toResponse(asset);
+        response.setLastOwnerName(lastOwnerName);
+        return response;
     }
 }
