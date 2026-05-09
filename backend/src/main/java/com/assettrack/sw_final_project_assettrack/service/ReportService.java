@@ -26,10 +26,6 @@ public class ReportService {
     private final ReportMapper reportMapper;
     private final NotificationService notificationService;
 
-    /*
-        ================= USER METHODS =================
-     */
-
     @Transactional
     public ReportResponse createReport(Long userId, ReportRequest request) {
 
@@ -40,16 +36,15 @@ public class ReportService {
                 .orElseThrow(() -> new RuntimeException("Asset not found"));
 
         Report report = reportMapper.toEntity(request, user, asset);
-
         Report saved = reportRepository.save(report);
 
-        // Notify Admins and Managers
+        String subject = "New Asset Report Submitted";
         String message = "New report submitted by " + user.getFirstName() + " for asset " + asset.getSn();
-        userRepository.findByRoleId(1L).forEach(manager -> 
-            notificationService.createNotification(manager.getId(), message)
+        userRepository.findByRoleId(1L).forEach(manager ->
+                notificationService.createNotification(manager.getId(), subject, message)
         );
-        userRepository.findByRoleId(2L).forEach(admin -> 
-            notificationService.createNotification(admin.getId(), message)
+        userRepository.findByRoleId(2L).forEach(admin ->
+                notificationService.createNotification(admin.getId(), subject, message)
         );
 
         return reportMapper.toResponse(saved);
@@ -81,10 +76,6 @@ public class ReportService {
                 .map(reportMapper::toResponse);
     }
 
-    /*
-        ================= ADMIN / MANAGER METHODS =================
-     */
-
     public ReportResponse getReportById(Long id) {
 
         Report report = reportRepository.findById(id)
@@ -105,14 +96,13 @@ public class ReportService {
                 .orElseThrow(() -> new RuntimeException("Report not found"));
 
         report.setStatus(status);
-
         Report saved = reportRepository.save(report);
 
-        // Notify the report submitter about the status change
         if (report.getUser() != null) {
             String assetInfo = report.getAsset() != null ? report.getAsset().getSn() : "unknown";
+            String subject = "Your Asset Report Status Was Updated";
             String message = "Your report for asset " + assetInfo + " has been updated to: " + status;
-            notificationService.createNotification(report.getUser().getId(), message);
+            notificationService.createNotification(report.getUser().getId(), subject, message);
         }
 
         return reportMapper.toResponse(saved);

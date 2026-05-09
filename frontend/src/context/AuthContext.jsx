@@ -8,7 +8,6 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // On app load, restore session from localStorage
   useEffect(() => {
     const savedToken = localStorage.getItem('token')
     const savedUser = localStorage.getItem('user')
@@ -18,7 +17,6 @@ export function AuthProvider({ children }) {
         setToken(savedToken)
         setUser(JSON.parse(savedUser))
       } catch {
-        // Corrupted data — clear it
         localStorage.removeItem('token')
         localStorage.removeItem('user')
       }
@@ -30,7 +28,6 @@ export function AuthProvider({ children }) {
     const response = await API.post('/auth/login', { email, password })
     const { token: newToken, user: baseUser } = response.data
 
-    // Set token immediately so subsequent API calls in this flow are authenticated
     localStorage.setItem('token', newToken)
 
     let fullUser = { ...baseUser }
@@ -72,15 +69,6 @@ export function AuthProvider({ children }) {
     setUser(null)
   }, [])
 
-  // Demo login — sets mock user data without calling the API
-  const demoLogin = useCallback((mockUser) => {
-    const fakeToken = 'demo-token-' + Date.now()
-    localStorage.setItem('token', fakeToken)
-    localStorage.setItem('user', JSON.stringify(mockUser))
-    setToken(fakeToken)
-    setUser(mockUser)
-  }, [])
-
   const isAuthenticated = !!token
 
   const value = {
@@ -91,7 +79,6 @@ export function AuthProvider({ children }) {
     login,
     signup,
     logout,
-    demoLogin,
   }
 
   return (

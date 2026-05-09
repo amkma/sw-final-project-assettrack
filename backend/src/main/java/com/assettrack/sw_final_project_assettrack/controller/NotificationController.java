@@ -35,13 +35,13 @@ public class NotificationController {
         notificationService.markAsRead(userId);
         return ResponseEntity.noContent().build();
     }
-    
+
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @PostMapping("/user/{userId}")
     public ResponseEntity<NotificationResponse> createNotification(
             @PathVariable Long userId,
             @RequestBody String message) {
-        return ResponseEntity.ok(notificationService.createNotification(userId, message));
+        return ResponseEntity.ok(notificationService.createNotification(userId, "AssetTrack Notification", message));
     }
 
     @PutMapping("/{id}/read")

@@ -13,14 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Scheduled task that runs daily to check for assets with
- * expired or soon-to-expire warranties and sends notifications
- * to all Admins (roleId=2) and Managers (roleId=1).
- *
- * Each asset is only notified about once — the warrantyNotified
- * flag prevents duplicate alerts on subsequent runs.
- */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -30,13 +22,6 @@ public class WarrantyExpirationScheduler {
     private final UserRepository userRepository;
     private final NotificationService notificationService;
 
-    /**
-     * Runs every day at 8:00 AM and also runs once on system startup.
-     * Checks for warranties that:
-     *   - Have already expired (warrantyEndDate < today)
-     *   - Will expire within the next 30 days
-     * Only processes assets that have NOT been notified yet.
-     */
     @Scheduled(cron = "0 0 8 * * *")
     @org.springframework.context.event.EventListener(org.springframework.boot.context.event.ApplicationReadyEvent.class)
     @Transactional
@@ -46,40 +31,38 @@ public class WarrantyExpirationScheduler {
         LocalDate today = LocalDate.now();
         LocalDate thirtyDaysFromNow = today.plusDays(30);
 
-        // Get only un-notified assets
         List<Asset> expiringSoon = assetRepository.findByWarrantyEndDateBetweenAndWarrantyNotifiedFalse(today, thirtyDaysFromNow);
         List<Asset> expired = assetRepository.findByWarrantyEndDateBeforeAndWarrantyNotifiedFalse(today);
 
-        // Get all admins and managers to notify
         List<User> admins = userRepository.findByRoleId(2L);
         List<User> managers = userRepository.findByRoleId(1L);
 
-        // Notify about expiring soon
         for (Asset asset : expiringSoon) {
-            String message = "⚠️ Warranty expiring soon: " + asset.getBrand() + " " + asset.getModel()
-                    + " (SN: " + asset.getSn() + ") — expires on " + asset.getWarrantyEndDate();
+            String subject = "Asset Warranty Expiring Soon";
+            String message = "Warranty expiring soon: " + asset.getBrand() + " " + asset.getModel()
+                    + " (SN: " + asset.getSn() + ") - expires on " + asset.getWarrantyEndDate();
 
             for (User admin : admins) {
-                notificationService.createNotification(admin.getId(), message);
+                notificationService.createNotification(admin.getId(), subject, message);
             }
             for (User manager : managers) {
-                notificationService.createNotification(manager.getId(), message);
+                notificationService.createNotification(manager.getId(), subject, message);
             }
 
             asset.setWarrantyNotified(true);
             assetRepository.save(asset);
         }
 
-        // Notify about already expired
         for (Asset asset : expired) {
-            String message = "🔴 Warranty expired: " + asset.getBrand() + " " + asset.getModel()
-                    + " (SN: " + asset.getSn() + ") — expired on " + asset.getWarrantyEndDate();
+            String subject = "Asset Warranty Expired";
+            String message = "Warranty expired: " + asset.getBrand() + " " + asset.getModel()
+                    + " (SN: " + asset.getSn() + ") - expired on " + asset.getWarrantyEndDate();
 
             for (User admin : admins) {
-                notificationService.createNotification(admin.getId(), message);
+                notificationService.createNotification(admin.getId(), subject, message);
             }
             for (User manager : managers) {
-                notificationService.createNotification(manager.getId(), message);
+                notificationService.createNotification(manager.getId(), subject, message);
             }
 
             asset.setWarrantyNotified(true);

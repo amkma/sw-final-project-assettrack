@@ -20,10 +20,6 @@ public class LowStockScheduler {
     private final UserRepository userRepository;
     private final NotificationService notificationService;
 
-    /**
-     * Runs every day at 9:00 AM and also runs once on system startup.
-     * Checks for asset types that have fewer than 5 available units.
-     */
     @Scheduled(cron = "0 0 9 * * *")
     @org.springframework.context.event.EventListener(org.springframework.boot.context.event.ApplicationReadyEvent.class)
     @Transactional
@@ -39,17 +35,18 @@ public class LowStockScheduler {
             long count = ((Number) row[1]).longValue();
 
             if (count < 5) {
-                String message = "📉 Low Stock Alert: Only " + count + " " + type + "(s) available.";
+                String subject = "Low Stock Alert";
+                String message = "Low stock alert: only " + count + " " + type + "(s) available.";
 
                 for (User admin : admins) {
-                    notificationService.createNotification(admin.getId(), message);
+                    notificationService.createNotification(admin.getId(), subject, message);
                 }
                 for (User manager : managers) {
-                    notificationService.createNotification(manager.getId(), message);
+                    notificationService.createNotification(manager.getId(), subject, message);
                 }
             }
         }
-        
+
         log.info("Low stock check complete.");
     }
 }
