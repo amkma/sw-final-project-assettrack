@@ -5,8 +5,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import java.util.List;
 
 public interface AssetRepository extends JpaRepository<Asset, Long>,JpaSpecificationExecutor<Asset> {
+
+    @Query("SELECT a.status, COUNT(a) FROM Asset a GROUP BY a.status")
+    List<Object[]> countByStatus();
+
+    @Query("SELECT a.type, COUNT(a) FROM Asset a GROUP BY a.type")
+    List<Object[]> countByType();
+
 
    
     Asset findBySn(String serialNumber);
