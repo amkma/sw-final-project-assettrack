@@ -39,6 +39,8 @@ public class AssetService {
 
         Asset asset = assetMapper.toEntity(request, user);
 
+        if(user !=null) asset.setStatus("ASSIGNED");
+        
         assetRepository.save(asset);
 
         return assetMapper.toResponse(asset);
