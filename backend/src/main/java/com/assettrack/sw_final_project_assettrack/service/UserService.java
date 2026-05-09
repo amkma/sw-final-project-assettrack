@@ -8,6 +8,8 @@ import com.assettrack.sw_final_project_assettrack.dto.response.UserResponse;
 import com.assettrack.sw_final_project_assettrack.entity.User;
 import com.assettrack.sw_final_project_assettrack.mapper.UserMapper;
 import com.assettrack.sw_final_project_assettrack.repository.UserRepository;
+import com.assettrack.sw_final_project_assettrack.repository.AssetRepository;
+import com.assettrack.sw_final_project_assettrack.entity.Asset;
 import com.assettrack.sw_final_project_assettrack.security.AppRole;
 import com.assettrack.sw_final_project_assettrack.security.CustomUserDetails;
 import com.assettrack.sw_final_project_assettrack.security.JwtUtil;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AssetRepository assetRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -120,6 +123,21 @@ public class UserService {
 
         user.setRoleId(role.getId());
         return userMapper.toResponse(userRepository.save(user));
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        
+        // Unassign all assets assigned to this user
+        List<Asset> userAssets = assetRepository.findAllByUserId(userId);
+        for (Asset asset : userAssets) {
+            asset.setUser(null);
+            assetRepository.save(asset);
+        }
+
+        userRepository.delete(user);
     }
 
     private String normalizeEmail(String email) {

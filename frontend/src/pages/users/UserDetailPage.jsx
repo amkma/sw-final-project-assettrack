@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
-import { getUserById, updateUser } from '../../api/userApi'
+import { getUserById, updateUser, deleteUser } from '../../api/userApi'
 import { getAssetsByUser } from '../../api/assetApi'
 import UserForm from '../../components/forms/UserForm'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
@@ -21,6 +21,7 @@ export default function UserDetailPage() {
   const [loading, setLoading] = useState(true)
   const [roleLoading, setRoleLoading] = useState(false)
   const [roleSuccess, setRoleSuccess] = useState('')
+  const [deleteLoading, setDeleteLoading] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -55,6 +56,21 @@ export default function UserDetailPage() {
       // handle error silently
     } finally {
       setRoleLoading(false)
+    }
+  }
+
+  async function handleDeleteUser() {
+    if (!window.confirm(`Are you sure you want to delete ${profile.firstName} ${profile.lastName}? All assigned assets will be unassigned.`)) {
+      return
+    }
+    setDeleteLoading(true)
+    try {
+      await deleteUser(id)
+      navigate('/users', { replace: true })
+    } catch (err) {
+      alert('Failed to delete user.')
+    } finally {
+      setDeleteLoading(false)
     }
   }
 
@@ -99,6 +115,19 @@ export default function UserDetailPage() {
           <h1 className="page-title">{profile.firstName} {profile.lastName}</h1>
           <p className="page-subtitle">{profile.email || 'No email provided'}</p>
         </div>
+        {isAdmin && (
+          <button 
+            className="btn btn-danger" 
+            onClick={handleDeleteUser}
+            disabled={deleteLoading}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z" />
+              <path fillRule="evenodd" d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+            </svg>
+            {deleteLoading ? 'Deleting...' : 'Delete User'}
+          </button>
+        )}
       </div>
 
       <div className="user-detail__grid">

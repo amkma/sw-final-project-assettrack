@@ -1,9 +1,22 @@
 import API from './axiosInstance';
 
+const getUserRole = () => {
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user?.roleId ?? null;
+  } catch {
+    return null;
+  }
+};
+
 // ── CRUD ────────────────────────────────────────────────────
 
 /** Get all assets */
-export const getAssets = () => API.get('/assets', { params: { size: 1000 } });
+export const getAssets = () => {
+  const role = getUserRole();
+  const endpoint = role === 0 ? '/assets/me' : '/assets';
+  return API.get(endpoint, { params: { size: 1000 } });
+};
 
 /** Get a single asset by ID */
 export const getAssetById = (id) => API.get(`/assets/${id}`);
@@ -26,7 +39,11 @@ export const deleteAsset = (id) => API.delete(`/assets/${id}`);
  * Search assets with optional filters.
  * @param {Object} data — { sn, type, brand, status, userId }
  */
-export const searchAssets = (data) => API.post('/assets/search', data, { params: { size: 1000 } });
+export const searchAssets = (data) => {
+  const role = getUserRole();
+  const endpoint = role === 0 ? '/assets/me/search' : '/assets/search';
+  return API.post(endpoint, data, { params: { size: 1000 } });
+};
 
 /**
  * Find an available spare asset of a given type.

@@ -29,6 +29,12 @@ export const getUserById = async (id) => {
 export const updateUser = (data) => API.put('/users', data);
 
 /**
+ * Delete a user (Admin).
+ * @param {number} userId
+ */
+export const deleteUser = (userId) => API.delete(`/users/${userId}`);
+
+/**
  * Change user role (Admin).
  * @param {number} userId
  * @param {number} newRoleId

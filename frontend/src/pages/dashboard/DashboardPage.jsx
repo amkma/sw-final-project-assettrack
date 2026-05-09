@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import useAuth from '../../hooks/useAuth'
 import { getAssets } from '../../api/assetApi'
+import { getDashboardStats } from '../../api/dashboardApi'
 import { getHistoryByUser } from '../../api/historyApi'
 import StatCard from '../../components/cards/StatCard'
 import AssetChart from '../../components/charts/AssetChart'
@@ -30,26 +31,37 @@ const icons = {
       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
     </svg>
   ),
+  users: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+    </svg>
+  ),
+  reports: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M15.73 3H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27L15.73 3zM19 14.9L14.9 19H9.1L5 14.9V9.1L9.1 5h5.8L19 9.1v5.8zM11 7h2v6h-2V7zm0 8h2v2h-2v-2z" />
+    </svg>
+  )
 }
 
 export default function DashboardPage() {
   const { user } = useAuth()
   const [assets, setAssets] = useState([])
+  const [stats, setStats] = useState(null)
   const [recentActivity, setRecentActivity] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [assetsRes] = await Promise.allSettled([
-          getAssets(),
-        ])
-
-        const assetList =
-          assetsRes.status === 'fulfilled' 
-            ? (assetsRes.value.data?.content || assetsRes.value.data || [])
-            : []
-        setAssets(assetList)
+        if (user?.roleId > 0) {
+          // Admin/Manager use dashboard API
+          const statsRes = await getDashboardStats()
+          setStats(statsRes.data)
+        } else {
+          // Normal user manually fetches their assets
+          const assetsRes = await getAssets()
+          setAssets(assetsRes.data?.content || assetsRes.data || [])
+        }
 
         // Try to fetch recent history for the current user
         if (user?.id) {
@@ -72,27 +84,29 @@ export default function DashboardPage() {
 
   // ── Compute stats ───────────────────────────────────────
 
-  const totalAssets = assets.length
-  const assignedAssets = assets.filter((a) => a.lastOwnerName != null).length
-  const availableAssets = totalAssets - assignedAssets
+  let totalAssets = 0
+  let assignedAssets = 0
+  let availableAssets = 0
+  let typeCounts = {}
 
-  const today = new Date()
-  const thirtyDaysLater = new Date(today)
-  thirtyDaysLater.setDate(today.getDate() + 30)
+  if (stats) {
+    totalAssets = stats.totalAssets || 0
+    // Summarize statuses: everything not "Available" might be assigned or under maintenance. Let's just use the map.
+    availableAssets = stats.statusDistribution?.['Available'] || 0
+    assignedAssets = totalAssets - availableAssets
+    typeCounts = stats.typeDistribution || {}
+  } else {
+    totalAssets = assets.length
+    assignedAssets = assets.filter((a) => a.lastOwnerName != null).length
+    availableAssets = totalAssets - assignedAssets
 
-  const expiringSoon = assets.filter((a) => {
-    if (!a.warrantyEndDate) return false
-    const end = new Date(a.warrantyEndDate)
-    return end >= today && end <= thirtyDaysLater
-  }).length
+    assets.forEach((a) => {
+      const t = a.type || 'Other'
+      typeCounts[t] = (typeCounts[t] || 0) + 1
+    })
+  }
 
   // ── Chart data ──────────────────────────────────────────
-
-  const typeCounts = {}
-  assets.forEach((a) => {
-    const t = a.type || 'Other'
-    typeCounts[t] = (typeCounts[t] || 0) + 1
-  })
 
   const typeLabels = Object.keys(typeCounts)
   const typeValues = Object.values(typeCounts)
@@ -151,12 +165,29 @@ export default function DashboardPage() {
               icon={icons.available}
               color="success"
             />
-            <StatCard
-              title="Expiring Soon"
-              value={expiringSoon}
-              icon={icons.expiring}
-              color="warning"
-            />
+            {stats ? (
+              <>
+                <StatCard
+                  title="Total Users"
+                  value={stats.totalUsers || 0}
+                  icon={icons.users}
+                  color="warning"
+                />
+                <StatCard
+                  title="Active Reports"
+                  value={stats.activeReports || 0}
+                  icon={icons.reports}
+                  color="warning"
+                />
+              </>
+            ) : (
+              <StatCard
+                title="Total Assets"
+                value={totalAssets}
+                icon={icons.total}
+                color="warning"
+              />
+            )}
           </div>
 
           {/* Charts Row */}

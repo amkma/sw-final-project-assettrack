@@ -61,4 +61,11 @@ public class UserController {
         UserResponse response = userService.changeRole(userId, newRoleId);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/users/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }

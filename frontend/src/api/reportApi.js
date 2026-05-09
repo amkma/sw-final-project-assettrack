@@ -1,7 +1,20 @@
 import API from './axiosInstance';
 
-/** Get all reports (Manager+) */
-export const getReports = () => API.get('/reports', { params: { size: 1000 } });
+const getUserRole = () => {
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user?.roleId ?? null;
+  } catch {
+    return null;
+  }
+};
+
+/** Get all reports (Manager+ or scoped for User) */
+export const getReports = () => {
+  const role = getUserRole();
+  const endpoint = role === 0 ? '/reports/me' : '/reports';
+  return API.get(endpoint, { params: { size: 1000 } });
+};
 
 /**
  * Create a new condition report (any authenticated user).
