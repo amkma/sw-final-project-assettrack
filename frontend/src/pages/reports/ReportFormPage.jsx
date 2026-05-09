@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useAuth from '../../hooks/useAuth'
 import { getAssets } from '../../api/assetApi'
 import { createReport } from '../../api/reportApi'
 import ReportForm from '../../components/forms/ReportForm'
@@ -7,6 +8,7 @@ import './ReportFormPage.css'
 
 export default function ReportFormPage() {
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   const [formData, setFormData] = useState({
     assetId: '',
@@ -21,7 +23,7 @@ export default function ReportFormPage() {
     async function fetchAssets() {
       try {
         const res = await getAssets()
-        setAssets(res.data || [])
+        setAssets(res.data?.content || res.data || [])
       } catch {
         setAssets([])
       }
@@ -61,6 +63,7 @@ export default function ReportFormPage() {
 
     try {
       await createReport({
+        userId: Number(user.id),
         assetId: Number(formData.assetId),
         description: formData.description.trim(),
       })

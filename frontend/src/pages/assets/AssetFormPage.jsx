@@ -49,7 +49,7 @@ export default function AssetFormPage() {
             model: asset.model || '',
             purchaseDate: asset.purchaseDate || '',
             warrantyEndDate: asset.warrantyEndDate || '',
-            userId: asset.user?.id?.toString() || '',
+            userId: '', // Backend doesn't return assigned userId in AssetResponse
           })
         } catch {
           setApiError('Failed to load asset data.')

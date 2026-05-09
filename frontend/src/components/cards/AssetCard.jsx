@@ -9,7 +9,7 @@ import './AssetCard.css'
 export default function AssetCard({ asset }) {
   const navigate = useNavigate()
 
-  const isAssigned = asset.user != null
+  const isAssigned = asset.lastOwnerName != null
   const warrantyOk = asset.warrantyEndDate
     ? new Date(asset.warrantyEndDate) > new Date()
     : null
@@ -64,7 +64,7 @@ export default function AssetCard({ asset }) {
         {isAssigned && (
           <div className="asset-card__meta">
             <span className="asset-card__meta-label">Assigned to</span>
-            <span>{asset.user.firstName} {asset.user.lastName}</span>
+            <span>{asset.lastOwnerName}</span>
           </div>
         )}
       </div>

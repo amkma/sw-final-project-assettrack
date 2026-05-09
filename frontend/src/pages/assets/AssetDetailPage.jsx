@@ -28,7 +28,7 @@ export default function AssetDetailPage() {
           getHistoryByAsset(id),
         ])
         if (assetRes.status === 'fulfilled') setAsset(assetRes.value.data)
-        if (historyRes.status === 'fulfilled') setHistory(historyRes.value.data || [])
+        if (historyRes.status === 'fulfilled') setHistory(historyRes.value.data?.content || historyRes.value.data || [])
       } catch {
         // API not available
       } finally {
@@ -94,7 +94,7 @@ export default function AssetDetailPage() {
   }
 
   const warranty = getWarrantyStatus(asset.warrantyEndDate)
-  const isAssigned = asset.user != null
+  const isAssigned = asset.lastOwnerName != null
 
   return (
     <div className="asset-detail animate-fade-in">
@@ -213,14 +213,11 @@ export default function AssetDetailPage() {
             {isAssigned ? (
               <div className="asset-detail__owner-info">
                 <div className="avatar avatar-lg">
-                  {asset.user.firstName?.[0]}{asset.user.lastName?.[0]}
+                  {asset.lastOwnerName?.[0]}
                 </div>
                 <div>
                   <p className="font-semibold" style={{ margin: 0 }}>
-                    {asset.user.firstName} {asset.user.lastName}
-                  </p>
-                  <p className="text-muted text-sm" style={{ margin: 0 }}>
-                    {asset.user.email || '—'}
+                    {asset.lastOwnerName}
                   </p>
                 </div>
               </div>
@@ -296,16 +293,10 @@ export default function AssetDetailPage() {
                       </span>
                     </div>
                     <div className="asset-detail__timeline-body">
-                      {entry.fromUser && (
+                      {entry.userId && (
                         <span className="asset-detail__timeline-user">
-                          <span className="text-muted">From:</span>{' '}
-                          {entry.fromUser.firstName} {entry.fromUser.lastName}
-                        </span>
-                      )}
-                      {entry.toUser && (
-                        <span className="asset-detail__timeline-user">
-                          <span className="text-muted">To:</span>{' '}
-                          {entry.toUser.firstName} {entry.toUser.lastName}
+                          <span className="text-muted">Assigned User ID:</span>{' '}
+                          {entry.userId}
                         </span>
                       )}
                       {entry.returnedAt && (

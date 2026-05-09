@@ -7,14 +7,8 @@ import './NotificationCard.css'
  * @param {Object}   notification — { id, description, date, isRead }
  * @param {Function} onMarkRead  — called with notification id
  */
-export default function NotificationCard({ notification, onMarkRead }) {
+export default function NotificationCard({ notification }) {
   const isUnread = !notification.isRead
-
-  function handleClick() {
-    if (isUnread && onMarkRead) {
-      onMarkRead(notification.id)
-    }
-  }
 
   // Derive icon based on description keywords
   function getIcon() {
@@ -51,10 +45,6 @@ export default function NotificationCard({ notification, onMarkRead }) {
   return (
     <div
       className={`notification-card ${isUnread ? 'notification-card--unread' : ''}`}
-      onClick={handleClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && handleClick()}
     >
       <div className="notification-card__icon">
         {getIcon()}

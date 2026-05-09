@@ -39,7 +39,7 @@ export default function SearchPage() {
       if (params.status) query.status = params.status
 
       const res = await searchAssets(query)
-      setResults(res.data || [])
+      setResults(res.data?.content || res.data || [])
     } catch {
       setResults([])
     } finally {
@@ -59,7 +59,8 @@ export default function SearchPage() {
     setSpareResult(null)
     try {
       const res = await findSpare('Laptop')
-      setSpareResult(res.data)
+      const spareList = res.data?.content || res.data || []
+      setSpareResult(spareList[0] || null)
     } catch {
       setSpareResult('none')
     } finally {
@@ -208,7 +209,7 @@ export default function SearchPage() {
                 </thead>
                 <tbody>
                   {results.map((asset) => {
-                    const isAssigned = asset.user != null
+                    const isAssigned = asset.lastOwnerName != null
                     return (
                       <tr
                         key={asset.id}
@@ -226,7 +227,7 @@ export default function SearchPage() {
                         </td>
                         <td>
                           {isAssigned
-                            ? `${asset.user.firstName} ${asset.user.lastName}`
+                            ? asset.lastOwnerName
                             : <span className="text-muted">—</span>}
                         </td>
                         <td>{formatDate(asset.warrantyEndDate)}</td>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 import { getUserById, updateUser } from '../../api/userApi'
-import { getAssets } from '../../api/assetApi'
+import { getAssetsByUser } from '../../api/assetApi'
 import UserForm from '../../components/forms/UserForm'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './UserDetailPage.css'
@@ -27,12 +27,12 @@ export default function UserDetailPage() {
       try {
         const [userRes, assetsRes] = await Promise.allSettled([
           getUserById(id),
-          getAssets(),
+          getAssetsByUser(id),
         ])
         if (userRes.status === 'fulfilled') setProfile(userRes.value.data)
         if (assetsRes.status === 'fulfilled') {
-          const all = assetsRes.value.data || []
-          setUserAssets(all.filter((a) => a.user?.id === Number(id)))
+          const all = assetsRes.value.data?.content || assetsRes.value.data || []
+          setUserAssets(all)
         }
       } catch {
         // API not ready
@@ -97,7 +97,7 @@ export default function UserDetailPage() {
             Back to Users
           </button>
           <h1 className="page-title">{profile.firstName} {profile.lastName}</h1>
-          <p className="page-subtitle">{profile.email}</p>
+          <p className="page-subtitle">{profile.email || 'No email provided'}</p>
         </div>
       </div>
 
@@ -110,7 +110,7 @@ export default function UserDetailPage() {
               <h3 className="user-detail__name">
                 {profile.firstName} {profile.lastName}
               </h3>
-              <p className="text-muted text-sm" style={{ margin: 0 }}>{profile.email}</p>
+              <p className="text-muted text-sm" style={{ margin: 0 }}>{profile.email || 'No email provided'}</p>
               <span className={`badge ${ROLE_BADGE[profile.roleId] || 'badge-neutral'} mt-2`}>
                 {ROLE_MAP[profile.roleId] || 'Unknown'}
               </span>

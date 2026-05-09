@@ -46,14 +46,17 @@ export default function DashboardPage() {
         ])
 
         const assetList =
-          assetsRes.status === 'fulfilled' ? assetsRes.value.data : []
+          assetsRes.status === 'fulfilled' 
+            ? (assetsRes.value.data?.content || assetsRes.value.data || [])
+            : []
         setAssets(assetList)
 
         // Try to fetch recent history for the current user
         if (user?.id) {
           try {
             const histRes = await getHistoryByUser(user.id)
-            setRecentActivity(histRes.data?.slice(0, 5) || [])
+            const histList = histRes.data?.content || histRes.data || []
+            setRecentActivity(histList.slice(0, 5))
           } catch {
             setRecentActivity([])
           }
@@ -70,7 +73,7 @@ export default function DashboardPage() {
   // ── Compute stats ───────────────────────────────────────
 
   const totalAssets = assets.length
-  const assignedAssets = assets.filter((a) => a.user != null).length
+  const assignedAssets = assets.filter((a) => a.lastOwnerName != null).length
   const availableAssets = totalAssets - assignedAssets
 
   const today = new Date()
@@ -199,15 +202,8 @@ export default function DashboardPage() {
                           {entry.note || 'Asset transferred'}
                         </p>
                         <div className="dashboard-page__timeline-meta">
-                          {entry.fromUser && (
-                            <span>
-                              From: {entry.fromUser.firstName} {entry.fromUser.lastName}
-                            </span>
-                          )}
-                          {entry.toUser && (
-                            <span>
-                              To: {entry.toUser.firstName} {entry.toUser.lastName}
-                            </span>
+                          {entry.assetId && (
+                            <span>Asset ID: {entry.assetId}</span>
                           )}
                           <span className="text-muted">{formatDate(entry.assignedAt)}</span>
                         </div>

@@ -34,16 +34,9 @@ export default function UsersListPage() {
     fetchData()
   }, [])
 
-  // Count assets per user
-  const assetCountMap = useMemo(() => {
-    const map = {}
-    assets.forEach((a) => {
-      if (a.user?.id) {
-        map[a.user.id] = (map[a.user.id] || 0) + 1
-      }
-    })
-    return map
-  }, [assets])
+  // Asset counting is no longer supported with the current backend AssetResponse
+  // without making individual calls per user. We'll default to '—'.
+  const assetCountMap = {}
 
   // Filter
   const filtered = useMemo(() => {
@@ -122,14 +115,14 @@ export default function UsersListPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="text-muted">{u.email}</td>
+                  <td className="text-muted">{u.email || '—'}</td>
                   <td>
                     <span className={`badge ${ROLE_BADGE[u.roleId] || 'badge-neutral'}`}>
                       {ROLE_MAP[u.roleId] || 'Unknown'}
                     </span>
                   </td>
                   <td>
-                    <span className="font-semibold">{assetCountMap[u.id] || 0}</span>
+                    <span className="font-semibold text-muted">—</span>
                   </td>
                 </tr>
               ))}

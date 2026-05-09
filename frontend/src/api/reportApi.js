@@ -1,11 +1,11 @@
 import API from './axiosInstance';
 
 /** Get all reports (Manager+) */
-export const getReports = () => API.get('/reports');
+export const getReports = () => API.get('/reports', { params: { size: 1000 } });
 
 /**
  * Create a new condition report (any authenticated user).
- * @param {Object} data — { assetId, description }
+ * @param {Object} data — { assetId, userId, description }
  */
 export const createReport = (data) => API.post('/reports', data);
 
@@ -15,4 +15,4 @@ export const createReport = (data) => API.post('/reports', data);
  * @param {string} status — e.g. "Pending", "Reviewed", "Resolved"
  */
 export const updateReportStatus = (id, status) =>
-  API.put(`/reports/${id}/status`, { status });
+  API.patch(`/reports/${id}/status`, null, { params: { status } });

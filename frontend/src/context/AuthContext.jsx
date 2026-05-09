@@ -28,14 +28,31 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (email, password) => {
     const response = await API.post('/auth/login', { email, password })
-    const { token: newToken, ...userData } = response.data
+    const { token: newToken, user: baseUser } = response.data
 
+    // Set token immediately so subsequent API calls in this flow are authenticated
     localStorage.setItem('token', newToken)
-    localStorage.setItem('user', JSON.stringify(userData))
-    setToken(newToken)
-    setUser(userData)
 
-    return userData
+    let fullUser = { ...baseUser }
+    try {
+      const profileRes = await API.get(`/users/${baseUser.id}`)
+      fullUser = { ...fullUser, ...profileRes.data }
+    } catch (err) {
+      console.warn('Could not fetch full profile:', err)
+    }
+
+    const { ROLE_STRING_TO_ID } = await import('../utils/constants')
+
+    const finalUser = {
+      ...fullUser,
+      roleId: ROLE_STRING_TO_ID[baseUser.role] ?? 0,
+    }
+
+    localStorage.setItem('user', JSON.stringify(finalUser))
+    setToken(newToken)
+    setUser(finalUser)
+
+    return finalUser
   }, [])
 
   const signup = useCallback(async (firstName, lastName, email, password) => {

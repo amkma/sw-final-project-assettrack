@@ -23,7 +23,7 @@ export default function ReportsListPage() {
     async function fetchReports() {
       try {
         const res = await getReports()
-        setReports(res.data || [])
+        setReports(res.data?.content || res.data || [])
       } catch {
         setReports([])
       } finally {
@@ -113,22 +113,15 @@ export default function ReportsListPage() {
           <table className="table">
             <thead>
               <tr>
-                <th>Asset SN</th>
                 <th>Description</th>
                 <th>Status</th>
                 <th>Date</th>
-                <th>Reported By</th>
                 {isAdminOrManager && <th>Actions</th>}
               </tr>
             </thead>
             <tbody>
               {filtered.map((report) => (
                 <tr key={report.id}>
-                  <td>
-                    <code className="reports-list-page__sn">
-                      {report.asset?.sn || '—'}
-                    </code>
-                  </td>
                   <td>
                     <span className="reports-list-page__desc">
                       {report.description || '—'}
@@ -140,11 +133,6 @@ export default function ReportsListPage() {
                     </span>
                   </td>
                   <td className="text-muted">{formatDate(report.date)}</td>
-                  <td>
-                    {report.user
-                      ? `${report.user.firstName} ${report.user.lastName}`
-                      : '—'}
-                  </td>
                   {isAdminOrManager && (
                     <td>
                       <div className="reports-list-page__status-action">

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import useAuth from '../../hooks/useAuth'
 import { getNotifications, markAsRead } from '../../api/notificationApi'
 import { groupByDate } from '../../utils/helpers'
 import NotificationCard from '../../components/cards/NotificationCard'
@@ -6,14 +7,16 @@ import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './NotificationsPage.css'
 
 export default function NotificationsPage() {
+  const { user } = useAuth()
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetch() {
+      if (!user?.id) return
       try {
-        const res = await getNotifications()
-        setNotifications(res.data || [])
+        const res = await getNotifications(user.id)
+        setNotifications(res.data?.content || res.data || [])
       } catch {
         setNotifications([])
       } finally {
@@ -21,22 +24,18 @@ export default function NotificationsPage() {
       }
     }
     fetch()
-  }, [])
+  }, [user?.id])
 
-  async function handleMarkRead(id) {
+  async function handleMarkAllRead() {
+    if (!user?.id) return
     try {
-      await markAsRead(id)
+      await markAsRead(user.id)
       setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+        prev.map((n) => ({ ...n, isRead: true }))
       )
     } catch {
       // handle silently
     }
-  }
-
-  function handleMarkAllRead() {
-    const unread = notifications.filter((n) => !n.isRead)
-    unread.forEach((n) => handleMarkRead(n.id))
   }
 
   const unreadCount = notifications.filter((n) => !n.isRead).length
@@ -85,7 +84,6 @@ export default function NotificationsPage() {
                 <NotificationCard
                   key={notif.id}
                   notification={notif}
-                  onMarkRead={handleMarkRead}
                 />
               ))}
             </div>

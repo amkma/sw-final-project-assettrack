@@ -29,7 +29,7 @@ export default function AssetsListPage() {
     async function fetchAssets() {
       try {
         const res = await getAssets()
-        setAssets(res.data || [])
+        setAssets(res.data?.content || res.data || [])
       } catch {
         setAssets([])
       } finally {
@@ -56,8 +56,8 @@ export default function AssetsListPage() {
     return assets.filter((a) => {
       if (filterType && a.type !== filterType) return false
       if (filterBrand && a.brand !== filterBrand) return false
-      if (filterStatus === 'assigned' && a.user == null) return false
-      if (filterStatus === 'available' && a.user != null) return false
+      if (filterStatus === 'assigned' && a.lastOwnerName == null) return false
+      if (filterStatus === 'available' && a.lastOwnerName != null) return false
       return true
     })
   }, [assets, filterType, filterBrand, filterStatus])
@@ -237,7 +237,7 @@ export default function AssetsListPage() {
             </thead>
             <tbody>
               {paginated.map((asset) => {
-                const isAssigned = asset.user != null
+                const isAssigned = asset.lastOwnerName != null
                 return (
                   <tr
                     key={asset.id}
@@ -256,7 +256,7 @@ export default function AssetsListPage() {
                     <td>{formatDate(asset.warrantyEndDate)}</td>
                     <td>
                       {isAssigned
-                        ? `${asset.user.firstName} ${asset.user.lastName}`
+                        ? asset.lastOwnerName
                         : <span className="text-muted">—</span>}
                     </td>
                     <td>

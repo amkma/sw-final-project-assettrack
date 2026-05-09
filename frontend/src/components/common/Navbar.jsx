@@ -1,13 +1,25 @@
 import { useState, useRef, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
+import { getUnreadCount } from '../../api/notificationApi'
 import './Navbar.css'
 
 export default function Navbar({ onMenuToggle }) {
   const navigate = useNavigate()
+  const location = useLocation()
   const { user, logout } = useAuth()
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
   const dropdownRef = useRef(null)
+
+  // Fetch unread count initially and when navigating
+  useEffect(() => {
+    if (user?.id) {
+      getUnreadCount(user.id)
+        .then(res => setUnreadCount(res.data || 0))
+        .catch(err => console.warn('Failed to fetch unread count', err))
+    }
+  }, [user?.id, location.pathname])
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -59,8 +71,11 @@ export default function Navbar({ onMenuToggle }) {
           <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
             <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
           </svg>
-          {/* Unread badge — shown as static dot; will be wired to real count later */}
-          <span className="navbar__badge" aria-hidden="true"></span>
+          {unreadCount > 0 && (
+            <span className="navbar__badge" aria-label={`${unreadCount} unread`}>
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
         </Link>
 
         {/* User dropdown */}
