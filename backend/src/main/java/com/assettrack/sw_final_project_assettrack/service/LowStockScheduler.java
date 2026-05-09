@@ -21,10 +21,11 @@ public class LowStockScheduler {
     private final NotificationService notificationService;
 
     /**
-     * Runs every day at 9:00 AM.
+     * Runs every day at 9:00 AM and also runs once on system startup.
      * Checks for asset types that have fewer than 5 available units.
      */
     @Scheduled(cron = "0 0 9 * * *")
+    @org.springframework.context.event.EventListener(org.springframework.boot.context.event.ApplicationReadyEvent.class)
     @Transactional
     public void checkLowStock() {
         log.info("Running low stock check...");

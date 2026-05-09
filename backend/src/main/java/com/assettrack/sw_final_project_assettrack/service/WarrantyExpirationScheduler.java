@@ -31,13 +31,14 @@ public class WarrantyExpirationScheduler {
     private final NotificationService notificationService;
 
     /**
-     * Runs every day at 8:00 AM.
+     * Runs every day at 8:00 AM and also runs once on system startup.
      * Checks for warranties that:
      *   - Have already expired (warrantyEndDate < today)
      *   - Will expire within the next 30 days
      * Only processes assets that have NOT been notified yet.
      */
     @Scheduled(cron = "0 0 8 * * *")
+    @org.springframework.context.event.EventListener(org.springframework.boot.context.event.ApplicationReadyEvent.class)
     @Transactional
     public void checkWarrantyExpirations() {
         log.info("Running warranty expiration check...");
