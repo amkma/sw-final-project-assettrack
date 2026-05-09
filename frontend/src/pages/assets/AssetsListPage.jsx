@@ -57,8 +57,8 @@ export default function AssetsListPage() {
     return assets.filter((a) => {
       if (filterType && a.type !== filterType) return false
       if (filterBrand && a.brand !== filterBrand) return false
-      if (filterStatus === 'assigned' && a.lastOwnerName == null) return false
-      if (filterStatus === 'available' && a.lastOwnerName != null) return false
+      if (filterStatus === 'assigned' && a.status?.toUpperCase() !== 'ASSIGNED') return false
+      if (filterStatus === 'available' && a.status?.toUpperCase() !== 'AVAILABLE') return false
       return true
     })
   }, [assets, filterType, filterBrand, filterStatus])
@@ -238,7 +238,7 @@ export default function AssetsListPage() {
             </thead>
             <tbody>
               {paginated.map((asset) => {
-                const isAssigned = asset.lastOwnerName != null
+                const isAssigned = asset.status?.toUpperCase() === 'ASSIGNED'
                 return (
                   <tr
                     key={asset.id}
@@ -256,7 +256,7 @@ export default function AssetsListPage() {
                     <td>{formatDate(asset.purchaseDate)}</td>
                     <td>{formatDate(asset.warrantyEndDate)}</td>
                     <td>
-                      {isAssigned
+                      {asset.lastOwnerName
                         ? asset.lastOwnerName
                         : <span className="text-muted">—</span>}
                     </td>

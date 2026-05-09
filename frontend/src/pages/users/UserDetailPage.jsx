@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 import { getUserById, updateUser, deleteUser, changeRole } from '../../api/userApi'
+import { ROLE_STRING_TO_ID } from '../../utils/constants'
 import { getAssetsByUser } from '../../api/assetApi'
 import UserForm from '../../components/forms/UserForm'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
@@ -49,8 +50,13 @@ export default function UserDetailPage() {
     setRoleSuccess('')
     try {
       const res = await changeRole(id, newRoleId)
-      setProfile(res.data)
-      setRoleSuccess(`Role updated to ${ROLE_MAP[newRoleId]}`)
+      // Map backend role string to numeric roleId for immediate UI update
+      const updatedProfile = {
+        ...res.data,
+        roleId: ROLE_STRING_TO_ID[res.data.role] ?? newRoleId,
+      }
+      setProfile(updatedProfile)
+      setRoleSuccess(`Role updated to ${ROLE_MAP[updatedProfile.roleId]}`)
       setTimeout(() => setRoleSuccess(''), 3000)
     } catch {
       // handle error silently

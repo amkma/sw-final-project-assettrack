@@ -49,9 +49,7 @@ export default function Sidebar({ collapsed, onToggle }) {
     ...(isAdminOrManager
       ? [{ to: '/users', label: 'Users', icon: icons.users }]
       : []),
-    ...(isAdminOrManager
-      ? [{ to: '/reports', label: 'Reports', icon: icons.reports }]
-      : []),
+    { to: '/reports', label: 'Reports', icon: icons.reports },
     { to: '/search', label: 'Search', icon: icons.search },
     { to: '/notifications', label: 'Notifications', icon: icons.notifications },
   ]

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
-import { getAssetById, findSpare } from '../../api/assetApi'
+import { getAssetById, findSpare, deleteAsset } from '../../api/assetApi'
 import { getHistoryByAsset } from '../../api/historyApi'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './AssetDetailPage.css'
@@ -19,6 +19,7 @@ export default function AssetDetailPage() {
   const [loading, setLoading] = useState(true)
   const [spareResult, setSpareResult] = useState(null)
   const [spareFinding, setSpareFinding] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
 
   useEffect(() => {
     async function fetchData() {
@@ -63,6 +64,21 @@ export default function AssetDetailPage() {
     }).format(new Date(dateStr))
   }
 
+  async function handleDeleteAsset() {
+    if (!window.confirm(`Are you sure you want to delete this asset (${asset?.sn})? This action cannot be undone.`)) {
+      return
+    }
+    setDeleteLoading(true)
+    try {
+      await deleteAsset(id)
+      navigate('/assets', { replace: true })
+    } catch {
+      alert('Failed to delete asset.')
+    } finally {
+      setDeleteLoading(false)
+    }
+  }
+
   async function handleFindSpare() {
     if (!asset?.type) return
     setSpareFinding(true)
@@ -94,7 +110,7 @@ export default function AssetDetailPage() {
   }
 
   const warranty = getWarrantyStatus(asset.warrantyEndDate)
-  const isAssigned = asset.lastOwnerName != null
+  const isAssigned = asset.status?.toUpperCase() === 'ASSIGNED'
 
   return (
     <div className="asset-detail animate-fade-in">
@@ -134,6 +150,19 @@ export default function AssetDetailPage() {
             </svg>
             Report Issue
           </Link>
+          {isAdmin && (
+            <button
+              className="btn btn-danger"
+              onClick={handleDeleteAsset}
+              disabled={deleteLoading}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M5.5 5.5A.5.5 0 016 6v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm2.5 0a.5.5 0 01.5.5v6a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm3 .5a.5.5 0 00-1 0v6a.5.5 0 001 0V6z" />
+                <path fillRule="evenodd" d="M14.5 3a1 1 0 01-1 1H13v9a2 2 0 01-2 2H5a2 2 0 01-2-2V4h-.5a1 1 0 01-1-1V2a1 1 0 011-1H6a1 1 0 011-1h2a1 1 0 011 1h3.5a1 1 0 011 1v1zM4.118 4L4 4.059V13a1 1 0 001 1h6a1 1 0 001-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+              </svg>
+              {deleteLoading ? 'Deleting...' : 'Delete Asset'}
+            </button>
+          )}
         </div>
       </div>
 

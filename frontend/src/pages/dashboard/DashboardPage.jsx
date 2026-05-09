@@ -92,13 +92,17 @@ export default function DashboardPage() {
 
   if (stats) {
     totalAssets = stats.totalAssets || 0
-    // Summarize statuses: everything not "Available" might be assigned or under maintenance. Let's just use the map.
-    availableAssets = stats.statusDistribution?.['Available'] || 0
+    // Case-insensitive lookup — backend may return "AVAILABLE" while we expect "Available"
+    const statusDist = stats.statusDistribution || {}
+    const availableKey = Object.keys(statusDist).find(
+      (k) => k.toLowerCase() === 'available'
+    )
+    availableAssets = availableKey ? statusDist[availableKey] : 0
     assignedAssets = totalAssets - availableAssets
     typeCounts = stats.typeDistribution || {}
   } else {
     totalAssets = assets.length
-    assignedAssets = assets.filter((a) => a.lastOwnerName != null).length
+    assignedAssets = assets.filter((a) => a.status?.toUpperCase() === 'ASSIGNED').length
     availableAssets = totalAssets - assignedAssets
 
     assets.forEach((a) => {

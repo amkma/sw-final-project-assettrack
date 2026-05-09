@@ -104,15 +104,8 @@ function App() {
             }
           />
 
-          {/* Reports — list is Admin/Manager, create is all roles */}
-          <Route
-            path="/reports"
-            element={
-              <RoleGuard minRole={1}>
-                <ReportsListPage />
-              </RoleGuard>
-            }
-          />
+          {/* Reports — all roles can view (API scopes data per role) */}
+          <Route path="/reports" element={<ReportsListPage />} />
           <Route path="/reports/new" element={<ReportFormPage />} />
 
           {/* Notifications & Search — all roles */}

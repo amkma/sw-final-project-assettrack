@@ -9,7 +9,7 @@ import './AssetCard.css'
 export default function AssetCard({ asset }) {
   const navigate = useNavigate()
 
-  const isAssigned = asset.lastOwnerName != null
+  const isAssigned = asset.status?.toUpperCase() === 'ASSIGNED'
   const warrantyOk = asset.warrantyEndDate
     ? new Date(asset.warrantyEndDate) > new Date()
     : null
