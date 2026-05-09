@@ -3,6 +3,7 @@ import com.assettrack.sw_final_project_assettrack.dto.request.AssetRequest;
 import com.assettrack.sw_final_project_assettrack.dto.request.AssetSearchRequest;
 import com.assettrack.sw_final_project_assettrack.dto.response.AssetResponse;
 import com.assettrack.sw_final_project_assettrack.entity.Asset;
+import com.assettrack.sw_final_project_assettrack.entity.History;
 import com.assettrack.sw_final_project_assettrack.entity.User;
 import com.assettrack.sw_final_project_assettrack.mapper.AssetMapper;
 import com.assettrack.sw_final_project_assettrack.repository.AssetRepository;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -39,9 +42,23 @@ public class AssetService {
 
         Asset asset = assetMapper.toEntity(request, user);
 
-        if(user !=null) asset.setStatus("ASSIGNED");
-        
-        assetRepository.save(asset);
+        if (user != null) {
+            asset.setStatus("ASSIGNED");
+        } else {
+            asset.setStatus("AVAILABLE");
+        }
+
+        asset = assetRepository.save(asset);
+
+        if (user != null) {
+            History newHistory = History.builder()
+                    .asset(asset)
+                    .user(user)
+                    .assignedAt(LocalDate.now())
+                    .note("Assigned to " + user.getFirstName() + " " + user.getLastName())
+                    .build();
+            historyRepository.save(newHistory);
+        }
 
         return assetMapper.toResponse(asset);
     }
@@ -88,10 +105,47 @@ public class AssetService {
         }
 
         if (request.getUserId() != null) {
-            User user = userRepository.findById(request.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            User currentUser = asset.getUser();
+            User newUser = null;
 
-            asset.setUser(user);
+            if (request.getUserId() == -1L) {
+                // Explicitly unassign
+                asset.setUser(null);
+                asset.setStatus("AVAILABLE");
+            } else {
+                newUser = userRepository.findById(request.getUserId())
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+                asset.setUser(newUser);
+                asset.setStatus("ASSIGNED");
+            }
+
+            // Only update history if the user has changed
+            boolean userChanged = (currentUser == null && newUser != null) ||
+                                  (currentUser != null && !currentUser.equals(newUser));
+
+            if (userChanged) {
+                LocalDate now = LocalDate.now();
+
+                // Close existing history if any
+                if (currentUser != null) {
+                    historyRepository.findByAssetIdAndReturnedAtIsNull(asset.getId())
+                            .ifPresent(activeHistory -> {
+                                activeHistory.setReturnedAt(now);
+                                historyRepository.save(activeHistory);
+                            });
+                }
+
+                // Create new history if assigned to someone
+                if (newUser != null) {
+                    History newHistory = History.builder()
+                            .asset(asset)
+                            .user(newUser)
+                            .assignedAt(now)
+                            .note("Assigned to " + newUser.getFirstName() + " " + newUser.getLastName())
+                            .build();
+                    historyRepository.save(newHistory);
+                }
+            }
         }
 
         assetRepository.save(asset);

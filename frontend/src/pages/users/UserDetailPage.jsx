@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
-import { getUserById, updateUser, deleteUser } from '../../api/userApi'
+import { getUserById, updateUser, deleteUser, changeRole } from '../../api/userApi'
 import { getAssetsByUser } from '../../api/assetApi'
 import UserForm from '../../components/forms/UserForm'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
@@ -48,7 +48,7 @@ export default function UserDetailPage() {
     setRoleLoading(true)
     setRoleSuccess('')
     try {
-      const res = await updateUser(id, { roleId: newRoleId })
+      const res = await changeRole(id, newRoleId)
       setProfile(res.data)
       setRoleSuccess(`Role updated to ${ROLE_MAP[newRoleId]}`)
       setTimeout(() => setRoleSuccess(''), 3000)

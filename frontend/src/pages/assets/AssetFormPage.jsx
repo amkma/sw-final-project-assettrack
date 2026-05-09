@@ -112,7 +112,7 @@ export default function AssetFormPage() {
       model: formData.model.trim(),
       purchaseDate: formData.purchaseDate || null,
       warrantyEndDate: formData.warrantyEndDate || null,
-      userId: formData.userId ? Number(formData.userId) : null,
+      userId: formData.userId ? Number(formData.userId) : -1,
     }
 
     try {

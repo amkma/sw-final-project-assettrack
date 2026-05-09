@@ -22,6 +22,7 @@ public class ReportService {
     private final UserRepository userRepository;
     private final AssetRepository assetRepository;
     private final ReportMapper reportMapper;
+    private final NotificationService notificationService;
 
     /*
         ================= USER METHODS =================
@@ -38,6 +39,15 @@ public class ReportService {
         Report report = reportMapper.toEntity(request, user, asset);
 
         Report saved = reportRepository.save(report);
+
+        // Notify Admins and Managers
+        String message = "New report submitted by " + user.getFirstName() + " for asset " + asset.getSn();
+        userRepository.findByRoleId(1L).forEach(manager -> 
+            notificationService.createNotification(manager.getId(), message)
+        );
+        userRepository.findByRoleId(2L).forEach(admin -> 
+            notificationService.createNotification(admin.getId(), message)
+        );
 
         return reportMapper.toResponse(saved);
     }

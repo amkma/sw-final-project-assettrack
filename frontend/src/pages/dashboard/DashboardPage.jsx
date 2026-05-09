@@ -45,6 +45,7 @@ const icons = {
 
 export default function DashboardPage() {
   const { user } = useAuth()
+  const isDeveloper = user?.roleId === 0
   const [assets, setAssets] = useState([])
   const [stats, setStats] = useState(null)
   const [recentActivity, setRecentActivity] = useState([])
@@ -146,49 +147,51 @@ export default function DashboardPage() {
       ) : (
         <>
           {/* Stat Cards Row */}
-          <div className="dashboard-page__stats">
-            <StatCard
-              title="Total Assets"
-              value={totalAssets}
-              icon={icons.total}
-              color="primary"
-            />
-            <StatCard
-              title="Assigned"
-              value={assignedAssets}
-              icon={icons.assigned}
-              color="info"
-            />
-            <StatCard
-              title="Available"
-              value={availableAssets}
-              icon={icons.available}
-              color="success"
-            />
-            {stats ? (
-              <>
-                <StatCard
-                  title="Total Users"
-                  value={stats.totalUsers || 0}
-                  icon={icons.users}
-                  color="warning"
-                />
-                <StatCard
-                  title="Active Reports"
-                  value={stats.activeReports || 0}
-                  icon={icons.reports}
-                  color="warning"
-                />
-              </>
-            ) : (
+          {!isDeveloper && (
+            <div className="dashboard-page__stats">
               <StatCard
                 title="Total Assets"
                 value={totalAssets}
                 icon={icons.total}
-                color="warning"
+                color="primary"
               />
-            )}
-          </div>
+              <StatCard
+                title="Assigned"
+                value={assignedAssets}
+                icon={icons.assigned}
+                color="info"
+              />
+              <StatCard
+                title="Available"
+                value={availableAssets}
+                icon={icons.available}
+                color="success"
+              />
+              {stats ? (
+                <>
+                  <StatCard
+                    title="Total Users"
+                    value={stats.totalUsers || 0}
+                    icon={icons.users}
+                    color="warning"
+                  />
+                  <StatCard
+                    title="Active Reports"
+                    value={stats.activeReports || 0}
+                    icon={icons.reports}
+                    color="warning"
+                  />
+                </>
+              ) : (
+                <StatCard
+                  title="Total Assets"
+                  value={totalAssets}
+                  icon={icons.total}
+                  color="warning"
+                />
+              )}
+            </div>
+          )}
 
           {/* Charts Row */}
           <div className="dashboard-page__charts">
@@ -199,13 +202,15 @@ export default function DashboardPage() {
               values={typeValues.length ? typeValues : [1]}
               colors={typeLabels.length ? typeColors : ['#e9ecef']}
             />
-            <AssetChart
-              type="bar"
-              title="Allocation Status"
-              labels={allocationLabels}
-              values={allocationValues}
-              colors={allocationColors}
-            />
+            {!isDeveloper && (
+              <AssetChart
+                type="bar"
+                title="Allocation Status"
+                labels={allocationLabels}
+                values={allocationValues}
+                colors={allocationColors}
+              />
+            )}
           </div>
 
           {/* Recent Activity */}

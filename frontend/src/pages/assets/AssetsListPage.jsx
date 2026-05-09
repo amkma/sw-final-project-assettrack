@@ -12,6 +12,7 @@ export default function AssetsListPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const isAdmin = user?.roleId === 2
+  const isDeveloper = user?.roleId === 0
 
   const [assets, setAssets] = useState([])
   const [loading, setLoading] = useState(true)
@@ -161,7 +162,7 @@ export default function AssetsListPage() {
             >
               <option value="">All Statuses</option>
               <option value="assigned">Assigned</option>
-              <option value="available">Available</option>
+              {!isDeveloper && <option value="available">Available</option>}
             </select>
           </div>
 

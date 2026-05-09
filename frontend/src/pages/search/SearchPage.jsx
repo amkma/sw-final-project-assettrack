@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useAuth from '../../hooks/useAuth'
 import { searchAssets, findSpare } from '../../api/assetApi'
 import { ASSET_TYPES } from '../../utils/constants'
 import { formatDate } from '../../utils/helpers'
@@ -19,6 +20,9 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(false)
   const [spareResult, setSpareResult] = useState(null)
   const [spareFinding, setSpareFinding] = useState(false)
+
+  const { user } = useAuth()
+  const isDeveloper = user?.roleId === 0
 
   function handleChange(e) {
     const { name, value } = e.target
@@ -135,7 +139,7 @@ export default function SearchPage() {
               >
                 <option value="">Any</option>
                 <option value="assigned">Assigned</option>
-                <option value="available">Available</option>
+                {!isDeveloper && <option value="available">Available</option>}
               </select>
             </div>
           </div>
@@ -150,14 +154,16 @@ export default function SearchPage() {
             <button type="button" className="btn btn-ghost" onClick={handleClear}>
               Clear
             </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={handleFindSpare}
-              disabled={spareFinding}
-            >
-              {spareFinding ? 'Finding…' : '🔍 Find Available Spare Laptop'}
-            </button>
+            {!isDeveloper && (
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleFindSpare}
+                disabled={spareFinding}
+              >
+                {spareFinding ? 'Finding…' : '🔍 Find Available Spare Laptop'}
+              </button>
+            )}
           </div>
         </form>
 
@@ -166,10 +172,15 @@ export default function SearchPage() {
           <div className="search-page__spare-result animate-fade-in">
             <p className="font-semibold text-success">Spare laptop found!</p>
             <p className="text-sm">
-              {spareResult.brand} {spareResult.model} — SN: <code>{spareResult.sn}</code>
+              <strong>{spareResult.brand} {spareResult.model}</strong> — SN: <code>{spareResult.sn}</code>
             </p>
+            <div className="text-sm text-muted" style={{ marginTop: '0.5rem' }}>
+              <p>Production/Purchase Date: {formatDate(spareResult.purchaseDate)}</p>
+              <p>Warranty End: {formatDate(spareResult.warrantyEndDate)}</p>
+              <p>Last Owner: {spareResult.lastOwnerName || 'N/A'}</p>
+            </div>
             <button
-              className="btn btn-ghost btn-sm mt-1"
+              className="btn btn-ghost btn-sm mt-2"
               onClick={() => navigate(`/assets/${spareResult.id}`)}
             >
               View Asset →
