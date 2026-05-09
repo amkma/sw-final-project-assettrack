@@ -95,7 +95,6 @@ export default function UsersListPage() {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Role</th>
-                <th># Assets</th>
               </tr>
             </thead>
             <tbody>
@@ -120,9 +119,6 @@ export default function UsersListPage() {
                     <span className={`badge ${ROLE_BADGE[u.roleId] || 'badge-neutral'}`}>
                       {ROLE_MAP[u.roleId] || 'Unknown'}
                     </span>
-                  </td>
-                  <td>
-                    <span className="font-semibold text-muted">—</span>
                   </td>
                 </tr>
               ))}

@@ -35,7 +35,7 @@ public class User {
     @Column(nullable = false)
     private long roleId = 0;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Asset> assets = new ArrayList<>();
 

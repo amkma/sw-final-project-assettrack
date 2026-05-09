@@ -17,7 +17,7 @@ public interface AssetRepository extends JpaRepository<Asset, Long>,JpaSpecifica
     @Query("SELECT a.type, COUNT(a) FROM Asset a GROUP BY a.type")
     List<Object[]> countByType();
 
-    @Query("SELECT a.type, COUNT(a) FROM Asset a WHERE a.status = :status GROUP BY a.type")
+    @Query("SELECT a.type, SUM(CASE WHEN a.status = :status THEN 1 ELSE 0 END) FROM Asset a GROUP BY a.type")
     List<Object[]> countByTypeAndStatus(String status);
 
 
