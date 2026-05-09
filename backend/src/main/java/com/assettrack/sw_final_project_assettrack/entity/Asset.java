@@ -39,7 +39,8 @@ public class Asset {
     private LocalDate warrantyEndDate;
 
     @Builder.Default
-    private boolean warrantyNotified = false;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean warrantyNotified = false;
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
