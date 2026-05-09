@@ -134,6 +134,7 @@ public class UserService {
         List<Asset> userAssets = assetRepository.findAllByUserId(userId);
         for (Asset asset : userAssets) {
             asset.setUser(null);
+            asset.setStatus("AVAILABLE");
             assetRepository.save(asset);
         }
 

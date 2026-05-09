@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import useAuth from '../../hooks/useAuth'
-import { getNotifications, markAsRead } from '../../api/notificationApi'
+import { getNotifications, markAsRead, markNotificationAsRead, deleteNotification } from '../../api/notificationApi'
 import { groupByDate } from '../../utils/helpers'
 import NotificationCard from '../../components/cards/NotificationCard'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
@@ -35,6 +35,26 @@ export default function NotificationsPage() {
       setNotifications((prev) =>
         prev.map((n) => ({ ...n, isRead: true }))
       )
+    } catch {
+      // handle silently
+    }
+  }
+
+  async function handleMarkRead(id) {
+    try {
+      await markNotificationAsRead(id);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+      )
+    } catch {
+      // handle silently
+    }
+  }
+
+  async function handleDelete(id) {
+    try {
+      await deleteNotification(id);
+      setNotifications((prev) => prev.filter((n) => n.id !== id))
     } catch {
       // handle silently
     }
@@ -88,6 +108,8 @@ export default function NotificationsPage() {
                 <NotificationCard
                   key={notif.id}
                   notification={notif}
+                  onMarkRead={handleMarkRead}
+                  onDelete={handleDelete}
                 />
               ))}
             </div>

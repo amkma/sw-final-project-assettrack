@@ -63,4 +63,16 @@ public class NotificationService {
         notificationRepository.markAllAsReadByUserId(userId);
     }
 
+    @Transactional
+    public void markNotificationAsRead(Long id) {
+        notificationRepository.findById(id).ifPresent(notification -> {
+            notification.setRead(true);
+            notificationRepository.save(notification);
+        });
+    }
+
+    @Transactional
+    public void deleteNotification(Long id) {
+        notificationRepository.deleteById(id);
+    }
 }

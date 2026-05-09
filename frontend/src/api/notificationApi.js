@@ -21,3 +21,14 @@ export const createNotification = (userId, message) => API.post(`/notifications/
   headers: { 'Content-Type': 'text/plain' }
 });
 
+/**
+ * Mark a single notification as read.
+ * @param {number} id
+ */
+export const markNotificationAsRead = (id) => API.put(`/notifications/${id}/read`);
+
+/**
+ * Delete a notification.
+ * @param {number} id
+ */
+export const deleteNotification = (id) => API.delete(`/notifications/${id}`);
