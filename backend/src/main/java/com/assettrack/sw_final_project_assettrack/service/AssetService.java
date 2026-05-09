@@ -151,4 +151,35 @@ public class AssetService {
                     return assetMapper.toResponse(asset, lastOwnerName);
                 });
     }
+
+
+
+    //=========================USER-RELATED METHODS=========================
+
+    public Page<AssetResponse> getMyAssets(Long userId, Pageable pageable) {
+    return assetRepository.findByUserId(userId, pageable)
+            .map(assetMapper::toResponse);
+    }
+
+    public Page<AssetResponse> getMyAssetsByStatus(
+            Long userId,
+            String status,
+            Pageable pageable
+    ) {
+        return assetRepository.findByUserIdAndStatus(userId, status, pageable)
+                .map(assetMapper::toResponse);
+    }
+
+    public Page<AssetResponse> searchMyAssets(
+            Long userId,
+            AssetSearchRequest request,
+            Pageable pageable
+    ) {
+        request.setUserId(userId);
+
+        return assetRepository.findAll(
+                AssetSpecification.filter(request),
+                pageable
+        ).map(assetMapper::toResponse);
+    }
 }

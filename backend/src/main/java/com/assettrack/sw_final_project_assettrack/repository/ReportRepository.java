@@ -13,6 +13,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     Page<Report> findByUserId(Long userId, Pageable pageable);
 
     Page<Report> findByStatus(String status, Pageable pageable);
+    Page<Report> findByUserIdAndStatus(Long userId, String status, Pageable pageable);
 
     
 

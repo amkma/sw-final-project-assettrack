@@ -23,10 +23,13 @@ public class ReportService {
     private final AssetRepository assetRepository;
     private final ReportMapper reportMapper;
 
-    
-    public ReportResponse createReport(ReportRequest request) {
+    /*
+        ================= USER METHODS =================
+     */
 
-        User user = userRepository.findById(request.getUserId())
+    public ReportResponse createReport(Long userId, ReportRequest request) {
+
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Asset asset = assetRepository.findById(request.getAssetId())
@@ -39,7 +42,36 @@ public class ReportService {
         return reportMapper.toResponse(saved);
     }
 
-   
+    public ReportResponse getMyReportById(Long userId, Long reportId) {
+
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new RuntimeException("Report not found"));
+
+        if (!report.getUser().getId().equals(userId)) {
+            throw new RuntimeException("Access denied");
+        }
+
+        return reportMapper.toResponse(report);
+    }
+
+    public Page<ReportResponse> getMyReports(Long userId, Pageable pageable) {
+        return reportRepository.findByUserId(userId, pageable)
+                .map(reportMapper::toResponse);
+    }
+
+    public Page<ReportResponse> getMyReportsByStatus(
+            Long userId,
+            String status,
+            Pageable pageable
+    ) {
+        return reportRepository.findByUserIdAndStatus(userId, status, pageable)
+                .map(reportMapper::toResponse);
+    }
+
+    /*
+        ================= ADMIN / MANAGER METHODS =================
+     */
+
     public ReportResponse getReportById(Long id) {
 
         Report report = reportRepository.findById(id)
@@ -48,13 +80,11 @@ public class ReportService {
         return reportMapper.toResponse(report);
     }
 
-
     public Page<ReportResponse> getAllReports(Pageable pageable) {
         return reportRepository.findAll(pageable)
                 .map(reportMapper::toResponse);
     }
 
-    
     public ReportResponse updateStatus(Long id, String status) {
 
         Report report = reportRepository.findById(id)

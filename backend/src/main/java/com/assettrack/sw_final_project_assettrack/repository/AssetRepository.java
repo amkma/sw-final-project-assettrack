@@ -22,4 +22,10 @@ public interface AssetRepository extends JpaRepository<Asset, Long>,JpaSpecifica
     Page<Asset> findByUserId(Long userId, Pageable pageable);
 
     Page<Asset> findByTypeAndStatus(String type, String status, Pageable pageable);
+
+    Page<Asset> findByUserIdAndStatus(Long userId, String status, Pageable pageable);
+
+    Page<Asset> findByUserIdAndType(Long userId, String type, Pageable pageable);
+
+    Page<Asset> findByUserIdAndBrand(Long userId, String brand, Pageable pageable);
 }
