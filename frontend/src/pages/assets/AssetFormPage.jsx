@@ -86,6 +86,13 @@ export default function AssetFormPage() {
       newErrors.model = 'Model is required'
     }
 
+    if (!formData.purchaseDate) {
+      newErrors.purchaseDate = 'Purchase date is required'
+    }
+    if (!formData.warrantyEndDate) {
+      newErrors.warrantyEndDate = 'Warranty end date is required'
+    }
+    
     // Warranty date should be after purchase date
     if (formData.purchaseDate && formData.warrantyEndDate) {
       if (new Date(formData.warrantyEndDate) <= new Date(formData.purchaseDate)) {
@@ -112,7 +119,7 @@ export default function AssetFormPage() {
       model: formData.model.trim(),
       purchaseDate: formData.purchaseDate || null,
       warrantyEndDate: formData.warrantyEndDate || null,
-      userId: formData.userId ? Number(formData.userId) : -1,
+      userId: formData.userId ? Number(formData.userId) : (isEditing ? -1 : null),
     }
 
     try {
