@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import useAuth from '../../hooks/useAuth'
-import { getNotifications, markAsRead } from '../../api/notificationApi'
+import { getNotifications, markAsRead, triggerWarrantyCheck } from '../../api/notificationApi'
 import { groupByDate } from '../../utils/helpers'
 import NotificationCard from '../../components/cards/NotificationCard'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
@@ -8,22 +8,25 @@ import './NotificationsPage.css'
 
 export default function NotificationsPage() {
   const { user } = useAuth()
+  const isAdmin = user?.roleId === 2
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
+  const [warrantyChecking, setWarrantyChecking] = useState(false)
+
+  async function fetchNotifications() {
+    if (!user?.id) return
+    try {
+      const res = await getNotifications(user.id)
+      setNotifications(res.data?.content || res.data || [])
+    } catch {
+      setNotifications([])
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    async function fetch() {
-      if (!user?.id) return
-      try {
-        const res = await getNotifications(user.id)
-        setNotifications(res.data?.content || res.data || [])
-      } catch {
-        setNotifications([])
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetch()
+    fetchNotifications()
   }, [user?.id])
 
   async function handleMarkAllRead() {
@@ -35,6 +38,19 @@ export default function NotificationsPage() {
       )
     } catch {
       // handle silently
+    }
+  }
+
+  async function handleWarrantyCheck() {
+    setWarrantyChecking(true)
+    try {
+      await triggerWarrantyCheck()
+      // Re-fetch notifications to show new warranty alerts
+      await fetchNotifications()
+    } catch {
+      alert('Failed to run warranty check.')
+    } finally {
+      setWarrantyChecking(false)
     }
   }
 
@@ -54,14 +70,28 @@ export default function NotificationsPage() {
               : 'All caught up!'}
           </p>
         </div>
-        {unreadCount > 0 && (
-          <button className="btn btn-secondary btn-sm" onClick={handleMarkAllRead}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M13.354 4.354a.5.5 0 00-.708-.708L6 10.293 3.354 7.646a.5.5 0 10-.708.708l3 3a.5.5 0 00.708 0l7-7z" />
-            </svg>
-            Mark all as read
-          </button>
-        )}
+        <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+          {isAdmin && (
+            <button
+              className="btn btn-secondary btn-sm"
+              onClick={handleWarrantyCheck}
+              disabled={warrantyChecking}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 1a7 7 0 100 14A7 7 0 008 1zM7 5h2v4H7V5zm0 5h2v2H7v-2z" />
+              </svg>
+              {warrantyChecking ? 'Checking…' : 'Run Warranty Check'}
+            </button>
+          )}
+          {unreadCount > 0 && (
+            <button className="btn btn-secondary btn-sm" onClick={handleMarkAllRead}>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M13.354 4.354a.5.5 0 00-.708-.708L6 10.293 3.354 7.646a.5.5 0 10-.708.708l3 3a.5.5 0 00.708 0l7-7z" />
+              </svg>
+              Mark all as read
+            </button>
+          )}
+        </div>
       </div>
 
       {loading ? (

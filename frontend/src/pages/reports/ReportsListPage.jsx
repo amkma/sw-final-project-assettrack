@@ -114,6 +114,8 @@ export default function ReportsListPage() {
             <thead>
               <tr>
                 <th>Description</th>
+                {isAdminOrManager && <th>Submitted By</th>}
+                {isAdminOrManager && <th>Asset</th>}
                 <th>Status</th>
                 <th>Date</th>
                 {isAdminOrManager && <th>Actions</th>}
@@ -127,6 +129,12 @@ export default function ReportsListPage() {
                       {report.description || '—'}
                     </span>
                   </td>
+                  {isAdminOrManager && (
+                    <td>{report.userName || '—'}</td>
+                  )}
+                  {isAdminOrManager && (
+                    <td><code>{report.assetSn || '—'}</code></td>
+                  )}
                   <td>
                     <span className={`badge ${STATUS_BADGE[report.status] || 'badge-neutral'}`}>
                       {report.status || 'Unknown'}

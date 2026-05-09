@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface AssetRepository extends JpaRepository<Asset, Long>,JpaSpecificationExecutor<Asset> {
@@ -39,4 +40,9 @@ public interface AssetRepository extends JpaRepository<Asset, Long>,JpaSpecifica
     Page<Asset> findByUserIdAndType(Long userId, String type, Pageable pageable);
 
     Page<Asset> findByUserIdAndBrand(Long userId, String brand, Pageable pageable);
+
+    // Warranty expiration queries
+    List<Asset> findByWarrantyEndDateBetween(LocalDate start, LocalDate end);
+
+    List<Asset> findByWarrantyEndDateBefore(LocalDate date);
 }

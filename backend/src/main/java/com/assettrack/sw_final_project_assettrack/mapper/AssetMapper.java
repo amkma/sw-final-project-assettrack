@@ -21,6 +21,10 @@ public class AssetMapper {
     }
 
     public AssetResponse toResponse(Asset asset) {
+        String ownerName = null;
+        if (asset.getUser() != null) {
+            ownerName = asset.getUser().getFirstName() + " " + asset.getUser().getLastName();
+        }
         return AssetResponse.builder()
                 .id(asset.getId())
                 .sn(asset.getSn())
@@ -30,6 +34,7 @@ public class AssetMapper {
                 .status(asset.getStatus())
                 .purchaseDate(asset.getPurchaseDate())
                 .warrantyEndDate(asset.getWarrantyEndDate())
+                .lastOwnerName(ownerName)
                 .build();
     }
 

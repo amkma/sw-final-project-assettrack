@@ -13,4 +13,7 @@ public class ReportResponse {
     private String description;
     private LocalDate date;
     private String status;
+    private Long userId;
+    private String userName;
+    private String assetSn;
 }

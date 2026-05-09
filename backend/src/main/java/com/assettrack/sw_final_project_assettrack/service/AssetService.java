@@ -195,7 +195,12 @@ public class AssetService {
 
     public Page<AssetResponse> findAvailableSpareParts(String type, Pageable pageable) {
         return assetRepository.findByTypeAndStatus(type, "AVAILABLE", pageable)
-                .map(assetMapper::toResponse);
+                .map(asset -> {
+                    String lastOwnerName = historyRepository.findTopByAssetIdOrderByAssignedAtDesc(asset.getId())
+                            .map(history -> history.getUser().getFirstName() + " " + history.getUser().getLastName())
+                            .orElse(null);
+                    return assetMapper.toResponse(asset, lastOwnerName);
+                });
     }
 
     public Page<AssetResponse> getAvailableSpareLaptops(Pageable pageable) {

@@ -220,7 +220,7 @@ export default function SearchPage() {
                 </thead>
                 <tbody>
                   {results.map((asset) => {
-                    const isAssigned = asset.lastOwnerName != null
+                    const isAssigned = asset.status?.toUpperCase() === 'ASSIGNED'
                     return (
                       <tr
                         key={asset.id}
@@ -237,7 +237,7 @@ export default function SearchPage() {
                           </span>
                         </td>
                         <td>
-                          {isAssigned
+                          {asset.lastOwnerName
                             ? asset.lastOwnerName
                             : <span className="text-muted">—</span>}
                         </td>

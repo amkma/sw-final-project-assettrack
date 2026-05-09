@@ -104,6 +104,13 @@ public class ReportService {
 
         Report saved = reportRepository.save(report);
 
+        // Notify the report submitter about the status change
+        if (report.getUser() != null) {
+            String assetInfo = report.getAsset() != null ? report.getAsset().getSn() : "unknown";
+            String message = "Your report for asset " + assetInfo + " has been updated to: " + status;
+            notificationService.createNotification(report.getUser().getId(), message);
+        }
+
         return reportMapper.toResponse(saved);
     }
 

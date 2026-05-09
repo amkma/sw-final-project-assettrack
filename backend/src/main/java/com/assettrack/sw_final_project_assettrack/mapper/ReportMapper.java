@@ -26,6 +26,11 @@ public class ReportMapper {
                 .description(report.getDescription())
                 .date(report.getDate())
                 .status(report.getStatus())
+                .userId(report.getUser() != null ? report.getUser().getId() : null)
+                .userName(report.getUser() != null
+                        ? report.getUser().getFirstName() + " " + report.getUser().getLastName()
+                        : null)
+                .assetSn(report.getAsset() != null ? report.getAsset().getSn() : null)
                 .build();
     }
 }

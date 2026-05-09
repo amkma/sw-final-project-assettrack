@@ -2,6 +2,7 @@ package com.assettrack.sw_final_project_assettrack.controller;
 
 import com.assettrack.sw_final_project_assettrack.dto.response.NotificationResponse;
 import com.assettrack.sw_final_project_assettrack.service.NotificationService;
+import com.assettrack.sw_final_project_assettrack.service.WarrantyExpirationScheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class NotificationController {
 
     private final NotificationService notificationService;
+    private final WarrantyExpirationScheduler warrantyExpirationScheduler;
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<Page<NotificationResponse>> getUserNotifications(
@@ -34,11 +36,18 @@ public class NotificationController {
         return ResponseEntity.noContent().build();
     }
     
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @PostMapping("/user/{userId}")
     public ResponseEntity<NotificationResponse> createNotification(
             @PathVariable Long userId,
             @RequestBody String message) {
         return ResponseEntity.ok(notificationService.createNotification(userId, message));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/warranty-check")
+    public ResponseEntity<String> triggerWarrantyCheck() {
+        warrantyExpirationScheduler.checkWarrantyExpirations();
+        return ResponseEntity.ok("Warranty check completed");
     }
 }
