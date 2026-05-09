@@ -25,7 +25,7 @@ export const createReport = (data) => API.post('/reports', data);
 /**
  * Update the status of a report (Manager+).
  * @param {number} id
- * @param {string} status — e.g. "Pending", "Reviewed", "Resolved"
+ * @param {string} status — e.g. "PENDING", "REVIEWED", "RESOLVED"
  */
 export const updateReportStatus = (id, status) =>
   API.patch(`/reports/${id}/status`, null, { params: { status } });

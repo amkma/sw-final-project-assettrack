@@ -1,17 +1,25 @@
 import { useState, useEffect, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 import { getReports, updateReportStatus } from '../../api/reportApi'
 import LoadingSpinner from '../../components/common/LoadingSpinner'
 import './ReportsListPage.css'
 
 const STATUS_BADGE = {
-  Pending: 'badge-warning',
-  Reviewed: 'badge-info',
-  Resolved: 'badge-success',
+  PENDING: 'badge-warning',
+  REVIEWED: 'badge-info',
+  RESOLVED: 'badge-success',
+}
+
+const STATUS_LABEL = {
+  PENDING: 'Pending',
+  REVIEWED: 'Reviewed',
+  RESOLVED: 'Resolved',
 }
 
 export default function ReportsListPage() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const isAdminOrManager = user?.roleId >= 1
 
   const [reports, setReports] = useState([])
@@ -71,6 +79,18 @@ export default function ReportsListPage() {
             {filtered.length} report{filtered.length !== 1 ? 's' : ''}
           </p>
         </div>
+        {/* New Report button — visible to Users (developers) */}
+        {user?.roleId === 0 && (
+          <button
+            className="btn btn-primary"
+            onClick={() => navigate('/reports/new')}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style={{ marginRight: '6px' }}>
+              <path d="M8 2a.75.75 0 01.75.75v4.5h4.5a.75.75 0 010 1.5h-4.5v4.5a.75.75 0 01-1.5 0v-4.5h-4.5a.75.75 0 010-1.5h4.5v-4.5A.75.75 0 018 2z" />
+            </svg>
+            New Report
+          </button>
+        )}
       </div>
 
       {/* Filter Bar */}
@@ -84,9 +104,9 @@ export default function ReportsListPage() {
             onChange={(e) => setFilterStatus(e.target.value)}
           >
             <option value="">All Statuses</option>
-            <option value="Pending">Pending</option>
-            <option value="Reviewed">Reviewed</option>
-            <option value="Resolved">Resolved</option>
+            <option value="PENDING">Pending</option>
+            <option value="REVIEWED">Reviewed</option>
+            <option value="RESOLVED">Resolved</option>
           </select>
         </div>
         {filterStatus && (
@@ -107,6 +127,11 @@ export default function ReportsListPage() {
           </svg>
           <h3>No reports found</h3>
           <p>{filterStatus ? 'Try changing the status filter.' : 'No condition reports have been submitted yet.'}</p>
+          {user?.roleId === 0 && (
+            <button className="btn btn-primary" onClick={() => navigate('/reports/new')}>
+              Submit Your First Report
+            </button>
+          )}
         </div>
       ) : (
         <div className="table-container">
@@ -137,7 +162,7 @@ export default function ReportsListPage() {
                   )}
                   <td>
                     <span className={`badge ${STATUS_BADGE[report.status] || 'badge-neutral'}`}>
-                      {report.status || 'Unknown'}
+                      {STATUS_LABEL[report.status] || report.status || 'Unknown'}
                     </span>
                   </td>
                   <td className="text-muted">{formatDate(report.date)}</td>
@@ -150,9 +175,9 @@ export default function ReportsListPage() {
                           onChange={(e) => handleStatusChange(report.id, e.target.value)}
                           disabled={updatingId === report.id}
                         >
-                          <option value="Pending">Pending</option>
-                          <option value="Reviewed">Reviewed</option>
-                          <option value="Resolved">Resolved</option>
+                          <option value="PENDING">Pending</option>
+                          <option value="REVIEWED">Reviewed</option>
+                          <option value="RESOLVED">Resolved</option>
                         </select>
                         {updatingId === report.id && (
                           <LoadingSpinner size="sm" inline />
