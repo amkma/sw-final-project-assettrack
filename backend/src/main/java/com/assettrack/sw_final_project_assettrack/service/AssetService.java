@@ -1,6 +1,6 @@
 package com.assettrack.sw_final_project_assettrack.service;
-
 import com.assettrack.sw_final_project_assettrack.dto.request.AssetRequest;
+import com.assettrack.sw_final_project_assettrack.dto.request.AssetSearchRequest;
 import com.assettrack.sw_final_project_assettrack.dto.response.AssetResponse;
 import com.assettrack.sw_final_project_assettrack.entity.Asset;
 import com.assettrack.sw_final_project_assettrack.entity.User;
@@ -8,9 +8,11 @@ import com.assettrack.sw_final_project_assettrack.mapper.AssetMapper;
 import com.assettrack.sw_final_project_assettrack.repository.AssetRepository;
 import com.assettrack.sw_final_project_assettrack.repository.HistoryRepository;
 import com.assettrack.sw_final_project_assettrack.repository.UserRepository;
+import com.assettrack.sw_final_project_assettrack.specification.AssetSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -102,6 +104,18 @@ public class AssetService {
 
         assetRepository.delete(asset);
     }
+
+
+
+    public Page<AssetResponse> searchAssets(AssetSearchRequest request, Pageable pageable) {
+
+    Specification<Asset> spec = AssetSpecification.filter(request);
+
+    return assetRepository.findAll(spec, pageable)
+            .map(assetMapper::toResponse);
+}
+
+
 
     public Page<AssetResponse> getByStatus(String status, Pageable pageable) {
         return assetRepository.findByStatus(status, pageable)

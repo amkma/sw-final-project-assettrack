@@ -1,6 +1,7 @@
 package com.assettrack.sw_final_project_assettrack.controller;
 
 import com.assettrack.sw_final_project_assettrack.dto.request.AssetRequest;
+import com.assettrack.sw_final_project_assettrack.dto.request.AssetSearchRequest;
 import com.assettrack.sw_final_project_assettrack.dto.response.AssetResponse;
 import com.assettrack.sw_final_project_assettrack.service.AssetService;
 import jakarta.validation.Valid;
@@ -82,10 +83,5 @@ public class AssetController {
             Pageable pageable
     ) {
         return assetService.findAvailableSpareParts(type, pageable);
-    }
-
-    @GetMapping("/spare-laptops")
-    public Page<AssetResponse> getAvailableSpareLaptops(Pageable pageable) {
-        return assetService.getAvailableSpareLaptops(pageable);
     }
 }
