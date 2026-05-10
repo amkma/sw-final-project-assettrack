@@ -33,8 +33,8 @@ export default function RoleGuard({ children, minRole = 0 }) {
         <p className="access-denied__message">
           You don&apos;t have permission to view this page.
         </p>
-        <Link to="/" className="btn btn-primary">
-          Go to Dashboard
+        <Link to={userRole === 0 ? '/assets' : '/dashboard'} className="btn btn-primary">
+          Go to {userRole === 0 ? 'Assets' : 'Dashboard'}
         </Link>
       </div>
     )

@@ -49,8 +49,12 @@ export default function LoginPage() {
     setApiError('')
 
     try {
-      await login(formData.email, formData.password)
-      navigate('/dashboard', { replace: true })
+      const loggedInUser = await login(formData.email, formData.password)
+      if (loggedInUser.roleId === 0) {
+        navigate('/assets', { replace: true })
+      } else {
+        navigate('/dashboard', { replace: true })
+      }
     } catch (err) {
       const message =
         err.response?.data?.message ||

@@ -61,8 +61,15 @@ function App() {
             </ProtectedRoute>
           }
         >
-          {/* Dashboard — all roles */}
-          <Route path="/dashboard" element={<DashboardPage />} />
+          {/* Dashboard — Admin / Manager only */}
+          <Route
+            path="/dashboard"
+            element={
+              <RoleGuard minRole={1}>
+                <DashboardPage />
+              </RoleGuard>
+            }
+          />
 
           {/* Assets — all roles can view */}
           <Route path="/assets" element={<AssetsListPage />} />

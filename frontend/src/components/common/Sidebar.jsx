@@ -42,9 +42,10 @@ export default function Sidebar({ collapsed, onToggle }) {
 
   // Role checks: Admin = 2, Manager = 1, Developer = 0
   const isAdminOrManager = user?.roleId >= 1
+  const isDeveloper = user?.roleId === 0
 
   const navItems = [
-    { to: '/dashboard', label: 'Dashboard', icon: icons.dashboard },
+    ...(!isDeveloper ? [{ to: '/dashboard', label: 'Dashboard', icon: icons.dashboard }] : []),
     { to: '/assets', label: 'Assets', icon: icons.assets },
     ...(isAdminOrManager
       ? [{ to: '/users', label: 'Users', icon: icons.users }]
